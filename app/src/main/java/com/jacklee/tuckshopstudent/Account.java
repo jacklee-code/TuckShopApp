@@ -2,7 +2,7 @@ package com.jacklee.tuckshopstudent;
 
 public class Account {
     public int UserID;
-    public int Username;
-    public int Fullname;
-    public int Password;
+    public String Username;
+    public String Fullname;
+    public String Password;
 }

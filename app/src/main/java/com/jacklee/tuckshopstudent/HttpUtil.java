@@ -22,9 +22,9 @@ public class HttpUtil {
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
 
-                    //連線,也可以不用明文connect，使用下面的httpConn.getOutputStream()會自動connect
+
                     connection.connect();
-                    //建立輸入流，向指向的URL傳入引數
+
                     DataOutputStream dos=new DataOutputStream(connection.getOutputStream());
 
                     String urlParams = "";
@@ -39,7 +39,7 @@ public class HttpUtil {
                         urlParams = urlParams.substring(0, urlParams.length() - 1);
 
 
-                    Log.d("url parameter", urlParams);
+                    Log.i("url parameter", urlParams);
 
                     dos.writeBytes(urlParams);
                     dos.flush();

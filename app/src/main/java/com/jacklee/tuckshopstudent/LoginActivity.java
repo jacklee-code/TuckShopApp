@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -20,9 +21,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.jacklee.tuckshopstudent.R;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
@@ -34,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private Button loginButton;
     private ProgressBar loadingProgressBar;
+
+    Account account;
 
     final String hostname = "https://iit3008-11379925.000webhostapp.com";
 
@@ -56,7 +62,11 @@ public class LoginActivity extends AppCompatActivity {
                     case 200:
                         {
                             String response=(String) msg.obj;
-                            showLoginSuccess(response);
+
+                                Account[] acs = new Gson().fromJson(response, Account[].class);
+                                account = acs[0];
+                                showLoginSuccess(account.Fullname);
+
                         }
                         break;
 
@@ -70,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             String response=((Exception)msg.obj).toString();
                             showLoginFailed(getString(R.string.fail_network_problem) + response);
+                            Log.e("error", response);
                         }
 
                         break;
@@ -132,32 +143,40 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-                String url = hostname + "/login.php";
-                HttpUtil.sendHTTPRequest(url, null ,new HttpCallbackListener() {
+                Login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+            }
+        });
+    }
 
-                    @Override
-                    public void onFinish(String response) {
-                        Message msg=mHandler.obtainMessage();
-                        msg.what = 200;
-                        msg.obj = response;
-                        mHandler.sendMessage(msg);
-                    }
+    private void Login(String username, String password) {
+        String url = hostname + "/login.php";
+        Map<String, String> hm = new HashMap<>();
+        hm.put("username", username);
+        hm.put("password", password);
 
-                    @Override
-                    public void onError(Exception e) {
-                        Message msg=mHandler.obtainMessage();
-                        msg.what = 999;
-                        msg.obj = e;
-                        mHandler.sendMessage(msg);
-                    }
+        HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
 
-                    @Override
-                    public void OnForbiden() {
-                        Message msg=mHandler.obtainMessage();
-                        msg.what = 400;
-                        mHandler.sendMessage(msg);
-                    }
-                });
+            @Override
+            public void onFinish(String response) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = 200;
+                msg.obj = response;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = 999;
+                msg.obj = e;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnForbiden() {
+                Message msg=mHandler.obtainMessage();
+                msg.what = 400;
+                mHandler.sendMessage(msg);
             }
         });
     }
