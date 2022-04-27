@@ -8,5 +8,7 @@
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be longer than 5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="login_failed">"Login failed. "</string>
+    <string name="fail_username_or_password">"Incorrect username or password"</string>
+    <string name="fail_network_problem">A network error occurred : </string>
 </resources>
