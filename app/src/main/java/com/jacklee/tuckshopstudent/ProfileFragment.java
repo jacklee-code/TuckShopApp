@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -45,14 +46,12 @@ public class ProfileFragment extends Fragment {
                 switch (msg.what) {
                     case HandleCode.ProfileFailed:
                     {
-
+                        Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_LONG).show();
                     }
                     break;
 
                     case HandleCode.ProfileSuccess:
                     {
-                        binding.profileProgressBar.setVisibility(View.INVISIBLE);
-                        binding.profileLoading.setVisibility(View.INVISIBLE);
                         profile = new Gson().fromJson((String) msg.obj, StudentProfile[].class)[0];
                         binding.profileFullname.setText(profile.Fullname);
                         binding.profileUserid.setText(profile.UserId);
@@ -62,19 +61,26 @@ public class ProfileFragment extends Fragment {
                     }
                     break;
 
+                    case HandleCode.Error_Msg:
+                        {
+                            String response=((Exception)msg.obj).toString();
+                            Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_LONG).show();
+                            Log.e("debug", response);
+                        }
+
 
                     default:
                         break;
                 }
+
+                binding.profileProgressBar.setVisibility(View.INVISIBLE);
+                binding.profileLoading.setVisibility(View.INVISIBLE);
             };
         };
 
         Map<String, String> hm = new HashMap<>();
         hm.put("username", account.Username);
         hm.put("password", account.getPassword());
-
-        //TODO: change in every version
-        hm.put("typeid", "2");
 
         HttpUtil.sendHTTPRequest(hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
 
