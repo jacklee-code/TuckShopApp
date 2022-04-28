@@ -23,6 +23,7 @@ public class HttpUtil {
                     connection.setDoOutput(true);
 
 
+
                     connection.connect();
 
                     DataOutputStream dos=new DataOutputStream(connection.getOutputStream());
@@ -58,7 +59,60 @@ public class HttpUtil {
                         listener.onFinish(sb.toString());
 
                     } else if (HttpURLConnection.HTTP_FORBIDDEN == resultCode) { // 403 Forbiden
-                        listener.OnForbiden();
+                        listener.OnForbidden();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (listener != null) {
+                        listener.onError(e);
+                    }
+
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
+                }
+
+            }
+        }).start();
+    }
+
+    public static void sendHTTPRequest(final String address, final String json, final HttpCallbackListener listener) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                try {
+                    connection = (HttpURLConnection) new URL(address).openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+                    connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+
+                    connection.connect();
+
+                    DataOutputStream dos=new DataOutputStream(connection.getOutputStream());
+
+                    dos.writeBytes(json);
+                    dos.flush();
+                    dos.close();
+
+                    // Get Response
+                    int resultCode = connection.getResponseCode();
+                    if (HttpURLConnection.HTTP_OK == resultCode) { // 200 OK
+                        StringBuffer sb = new StringBuffer();
+                        String readLine = new String();
+                        BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                        while ((readLine = responseReader.readLine()) != null) {
+                            sb.append(readLine).append("\n");
+                        }
+                        responseReader.close();
+                        listener.onFinish(sb.toString());
+
+                    } else if (HttpURLConnection.HTTP_FORBIDDEN == resultCode) { // 403 Forbiden
+                        listener.OnForbidden();
                     }
 
                 } catch (Exception e) {

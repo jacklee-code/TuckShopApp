@@ -1,7 +1,9 @@
 package com.jacklee.tuckshopstudent;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.StringRes;
@@ -13,6 +15,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -37,14 +40,19 @@ public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private Button loginButton;
-    private ProgressBar loadingProgressBar;
+    private Button registerButton;
+    private ProgressBar loadingProgressBar, reg_progressbar;
+
+    private View register_view;
+
+    private EditText reg_username, reg_password, reg_password2, reg_fullname;
+    private Button reg_register, reg_cancel;
 
     Account account;
 
     final String hostname = "https://iit3008-11379925.000webhostapp.com";
 
     private Handler mHandler;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,11 +63,19 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.password);
         loginButton = findViewById(R.id.login);
         loadingProgressBar =findViewById(R.id.loading);
+        registerButton = findViewById(R.id.register);
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShowRegisterDialog();
+            }
+        });
 
         mHandler = new Handler(){
             public void handleMessage(android.os.Message msg) {
                 switch (msg.what) {
-                    case 200:
+                    case HandleCode.LoginSuccess:
                         {
                             String response=(String) msg.obj;
 
@@ -70,17 +86,41 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         break;
 
-                    case 400:
+                    case HandleCode.LoginFailed:
                         {
                             showLoginFailed(getString(R.string.fail_username_or_password));
                         }
 
                         break;
-                    case 999:
+                    case HandleCode.Error_Msg:
                         {
                             String response=((Exception)msg.obj).toString();
                             showLoginFailed(getString(R.string.fail_network_problem) + response);
                             Log.e("error", response);
+                        }
+                        break;
+
+                    case HandleCode.RegisterFailed:
+                        {
+                            reg_progressbar.setVisibility(View.INVISIBLE);
+                            AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                            alert.setTitle("Registration Failed");
+                            alert.setMessage("The username you have chosen may already be in use.");
+                            alert.setPositiveButton("OK", null);
+                            alert.show();
+                        }
+                        break;
+
+                    case HandleCode.RegisterSuccess:
+                        {
+                            Dialog dialog = (Dialog) msg.obj;
+                            reg_progressbar.setVisibility(View.INVISIBLE);
+                            dialog.dismiss();
+                            AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                            alert.setTitle("Registration Success");
+                            alert.setMessage("Please go back to the main screen to login.");
+                            alert.setPositiveButton("OK", null);
+                            alert.show();
                         }
 
                         break;
@@ -148,18 +188,135 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void ShowRegisterDialog() {
+        LayoutInflater inflater = LayoutInflater.from(LoginActivity.this);
+        register_view = inflater.inflate(R.layout.activity_register,null);
+
+        //-----------產生登入視窗--------
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sign Up");
+        builder.setCancelable(false);
+        builder.setView(register_view);
+        Dialog dialog = builder.create();
+        dialog.show();
+
+        reg_username = (EditText) register_view.findViewById(R.id.register_username);
+        reg_fullname = (EditText) register_view.findViewById(R.id.register_fullname);
+        reg_password = (EditText) register_view.findViewById(R.id.register_password);
+        reg_password2 = (EditText) register_view.findViewById(R.id.register_password2);
+        reg_register = (Button) register_view.findViewById(R.id.register_register);
+        reg_cancel = (Button) register_view.findViewById(R.id.register_cancel);
+        reg_progressbar = (ProgressBar) register_view.findViewById(R.id.reg_progressbar);
+
+        TextWatcher reg_TextWatcher = new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                boolean rusernameok, rpwok, rpw2ok, rfullnameok = false;
+
+                rusernameok = isUserNameValid(reg_username.getText().toString());
+                rpwok = isPasswordValid(reg_password.getText().toString());
+                rpw2ok = reg_password.getText().toString().equals(reg_password2.getText().toString());
+                rfullnameok = isFullnameValid(reg_fullname.getText().toString());
+
+                if (!rusernameok)
+                    reg_username.setError(getString(R.string.invalid_username));
+
+                if (!rpwok)
+                    reg_password.setError(getString(R.string.invalid_password));
+
+                if (!rpw2ok)
+                    reg_password2.setError("Password does not match, please re-enter");
+
+                if (!rfullnameok)
+                    reg_fullname.setError("Not a valid name");
+
+                reg_register.setEnabled(rusernameok && rpwok && rpw2ok && rfullnameok);
+            }
+        };
+
+        View.OnClickListener reg_clickListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if (view.getId() == R.id.register_cancel)
+                    dialog.dismiss();
+
+                else if (view.getId() == R.id.register_register) {
+                    reg_progressbar.setVisibility(View.VISIBLE);
+
+                    Account ac = new Account();
+                    ac.Username = reg_username.getText().toString();
+                    ac.setPassword(reg_password.getText().toString());
+                    ac.Fullname = reg_fullname.getText().toString();
+
+                    String url = hostname + "/register.php";
+                    Map<String, String> hm = new HashMap<>();
+                    hm.put("username", ac.Username);
+                    hm.put("password", ac.getPassword());
+                    hm.put("fullname", ac.Fullname);
+
+                    HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
+
+                        @Override
+                        public void onFinish(String response) {
+                            Message msg=mHandler.obtainMessage();
+                            msg.what = HandleCode.RegisterSuccess;
+                            msg.obj = dialog;
+                            mHandler.sendMessage(msg);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Message msg=mHandler.obtainMessage();
+                            msg.what = HandleCode.Error_Msg;
+                            msg.obj = e;
+                            mHandler.sendMessage(msg);
+                        }
+
+                        @Override
+                        public void OnForbidden() {
+                            Message msg=mHandler.obtainMessage();
+                            msg.what = HandleCode.RegisterFailed;
+                            msg.obj = dialog;
+                            mHandler.sendMessage(msg);
+                        }
+                    });
+                }
+            }
+        };
+
+        reg_username.addTextChangedListener(reg_TextWatcher);
+        reg_password.addTextChangedListener(reg_TextWatcher);
+        reg_password2.addTextChangedListener(reg_TextWatcher);
+        reg_fullname.addTextChangedListener(reg_TextWatcher);
+        reg_password.addTextChangedListener(reg_TextWatcher);
+        reg_register.setOnClickListener(reg_clickListener);
+        reg_cancel.setOnClickListener(reg_clickListener);
+    }
+
     private void Login(String username, String password) {
         String url = hostname + "/login.php";
         Map<String, String> hm = new HashMap<>();
-        hm.put("username", username);
-        hm.put("password", password);
+        Account ac = new Account();
+        ac.Username = username;
+        ac.setPassword(password);
+        hm.put("username", ac.Username);
+        hm.put("password", ac.getPassword());
 
         HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
 
             @Override
             public void onFinish(String response) {
                 Message msg=mHandler.obtainMessage();
-                msg.what = 200;
+                msg.what = HandleCode.LoginSuccess;
                 msg.obj = response;
                 mHandler.sendMessage(msg);
             }
@@ -167,15 +324,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(Exception e) {
                 Message msg=mHandler.obtainMessage();
-                msg.what = 999;
+                msg.what = HandleCode.Error_Msg;
                 msg.obj = e;
                 mHandler.sendMessage(msg);
             }
 
             @Override
-            public void OnForbiden() {
+            public void OnForbidden() {
                 Message msg=mHandler.obtainMessage();
-                msg.what = 400;
+                msg.what = HandleCode.LoginFailed;
                 mHandler.sendMessage(msg);
             }
         });
@@ -193,7 +350,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    // A placeholder username validation check
     private boolean isUserNameValid(String username) {
         String regex = "^[a-zA-Z0-9]+$";
 
@@ -202,6 +358,16 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return Pattern.compile(regex).matcher(username).matches();
+    }
+
+    private boolean isFullnameValid(String fullname) {
+        String regex = "^[a-zA-Z ]+$";
+
+        if (fullname == null) {
+            return false;
+        }
+
+        return Pattern.compile(regex).matcher(fullname).matches() && fullname.length() > 3;
     }
 
     // A placeholder password validation check
