@@ -11,4 +11,8 @@
     <string name="login_failed">"Login failed. "</string>
     <string name="fail_username_or_password">"Incorrect username or password"</string>
     <string name="fail_network_problem">A network error occurred : </string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_purchase">Purchase</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_history">Records</string>
 </resources>

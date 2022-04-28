@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.StringRes;
@@ -77,12 +78,15 @@ public class LoginActivity extends AppCompatActivity {
                 switch (msg.what) {
                     case HandleCode.LoginSuccess:
                         {
-                            String response=(String) msg.obj;
-
+                                String response=(String) msg.obj;
                                 Account[] acs = new Gson().fromJson(response, Account[].class);
                                 account = acs[0];
                                 showLoginSuccess(account.Fullname);
 
+                                // Open New Activity
+                                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                i.putExtra("account", account);
+                                startActivity(i);
                         }
                         break;
 
@@ -262,6 +266,9 @@ public class LoginActivity extends AppCompatActivity {
                     hm.put("username", ac.Username);
                     hm.put("password", ac.getPassword());
                     hm.put("fullname", ac.Fullname);
+
+                    //TODO: change in every version
+                    hm.put("typeid", "1");
 
                     HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
 

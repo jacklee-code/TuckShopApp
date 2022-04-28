@@ -1,17 +1,14 @@
 package com.jacklee.tuckshopstudent;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-public class Account {
-    private int UserID;
-    public String Username;
+public class Account implements Serializable {
     public String Fullname;
+    public String Username;
     private String Password;
 
-    public int getUserID() {
-        return UserID;
-    }
 
     public void setPassword(String password) {
         try {

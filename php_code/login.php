@@ -1,24 +1,24 @@
 <?php
-   include("connectDB.php");
+    include("connectDB.php");
 
-   $username = $_POST["username"];
-   $password = $_POST["password"];
+    $username = $_POST["username"];
+    $password = $_POST["password"];
 
-   $sql_query = "SELECT UserId, Username, Fullname FROM Accounts where Username=:username AND Password = :password;";
-   $statement = $db->prepare($sql_query);
-   $statement->bindParam(":username", $username);
-   $statement->bindParam(":password", $password);
-   $statement->execute();
+    $sql_query = "SELECT Username, Password, Fullname FROM Accounts where Username=:username AND Password = :password;";
+    $statement = $db->prepare($sql_query);
+    $statement->bindParam(":username", $username);
+    $statement->bindParam(":password", $password);
+    $statement->execute();
 
-   $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-   if($statement->rowCount() < 1) {
+    if($statement->rowCount() < 1) {
        http_response_code(403);
        return;
-   } else {
+    } else {
        http_response_code(200);
-   }
+    }
 
-   $json = json_encode($results, JSON_NUMERIC_CHECK);
-   echo $json;
+    $json = json_encode($results, JSON_NUMERIC_CHECK);
+    echo $json;
 ?>
