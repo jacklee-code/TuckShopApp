@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/listitem_foodname"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Food name ABC"
+        android:gravity="center_vertical"
+        android:layout_weight="0.3" />
+
+    <TextView
+        android:id="@+id/listitem_foodtype"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Soft Drink"
+        android:gravity="center_vertical"
+        android:layout_weight="0.4" />
+
+    <EditText
+        android:id="@+id/number"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="number"
+        android:layout_weight="0.5"
+        android:ems="10"
+        android:textAlignment="center"
+        android:textSize="14dp"
+        android:hint="Max:99"/>
+
+</LinearLayout>

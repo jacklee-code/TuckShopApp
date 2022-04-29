@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".PurchaseFragment">
 
+
+
     <ProgressBar
         android:id="@+id/purchase_progressBar"
         style="?android:attr/progressBarStyle"
@@ -19,6 +21,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.4"
         app:layout_constraintVertical_chainStyle="packed" />
+
+
+
+
+
 
     <TextView
         android:id="@+id/purchase_loading"
