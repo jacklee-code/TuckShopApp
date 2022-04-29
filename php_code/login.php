@@ -10,7 +10,7 @@
     $statement->bindParam(":password", $password);
     $statement->execute();
 
-    $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $results = $statement->fetch(PDO::FETCH_ASSOC);
 
     if($statement->rowCount() < 1) {
        http_response_code(403);

@@ -79,8 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                     case HandleCode.LoginSuccess:
                         {
                                 String response=(String) msg.obj;
-                                Account[] acs = new Gson().fromJson(response, Account[].class);
-                                account = acs[0];
+                                Account account = new Gson().fromJson(response, Account.class);
                                 showLoginSuccess(account.Fullname);
 
                                 // Open New Activity

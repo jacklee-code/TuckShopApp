@@ -10,10 +10,11 @@
         $statement->bindParam(":username", $username);
         $statement->bindParam(":password", $password);
         $statement->execute();
-        $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $results = $statement->fetch(PDO::FETCH_ASSOC);
     }
     catch (Exception $e) {
         echo 'Caught exception: ',  $e->getMessage(), "\n";
+        http_response_code(403);
     }
 
     if($statement->rowCount() < 1) {
