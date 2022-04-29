@@ -11,6 +11,7 @@
         $statement->bindParam(":password", $password);
         $statement->execute();
         $results = $statement->fetch(PDO::FETCH_ASSOC);
+		
     }
     catch (Exception $e) {
         echo 'Caught exception: ',  $e->getMessage(), "\n";

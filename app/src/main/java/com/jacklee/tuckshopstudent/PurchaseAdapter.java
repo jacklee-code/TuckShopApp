@@ -61,8 +61,12 @@ public class PurchaseAdapter extends BaseAdapter {
         return sum;
     }
 
-    public HashMap<Integer, Integer> getShoppingCart() {
-        return shoppingCart;
+    public ShoppingCart getShoppingCart(Account account) {
+        ShoppingCart sc = new ShoppingCart();
+        sc.Username = account.Username;
+        sc.Password = account.getPassword();
+        sc.ItemList = shoppingCart;
+        return sc;
     }
 
     @Override

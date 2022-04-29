@@ -29,12 +29,16 @@ public class PurchaseFragment extends Fragment {
     private PurchaseAdapter purchaseAdapter;
     private Handler mHandler;
 
+    private Account account;
+
     final String hostname = "https://iit3008-11379925.000webhostapp.com";
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentPurchaseBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        account = (Account) getActivity().getIntent().getSerializableExtra("account");
 
         mHandler = new Handler(){
             public void handleMessage(android.os.Message msg) {
@@ -94,7 +98,7 @@ public class PurchaseFragment extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Json");
-                builder.setMessage(new Gson().toJson(purchaseAdapter.getShoppingCart()));
+                builder.setMessage(new Gson().toJson(purchaseAdapter.getShoppingCart(account)));
                 builder.show();
             }
         });
