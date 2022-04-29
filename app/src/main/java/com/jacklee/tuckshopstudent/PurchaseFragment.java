@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
@@ -91,7 +92,10 @@ public class PurchaseFragment extends Fragment {
         binding.purchasePurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Sum is " + purchaseAdapter.getTotalAmount(), Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Json");
+                builder.setMessage(new Gson().toJson(purchaseAdapter.getShoppingCart()));
+                builder.show();
             }
         });
     }

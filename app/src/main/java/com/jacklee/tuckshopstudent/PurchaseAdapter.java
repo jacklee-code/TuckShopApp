@@ -61,6 +61,10 @@ public class PurchaseAdapter extends BaseAdapter {
         return sum;
     }
 
+    public HashMap<Integer, Integer> getShoppingCart() {
+        return shoppingCart;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView;
