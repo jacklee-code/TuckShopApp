@@ -3,7 +3,6 @@ package com.jacklee.tuckshopstudent;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +21,10 @@ public class PurchaseAdapter extends BaseAdapter {
     private List<Food> foodList;
     private HashMap<Integer, Integer> shoppingCart;
     private Double[] priceTable;
+    private TextView totalAmountView;
 
     LayoutInflater mInflater;
-    public PurchaseAdapter(Context context,List<Food> foodList){
+    public PurchaseAdapter(Context context,List<Food> foodList, TextView totalAmountView){
         this.context = context;
         this.foodList = foodList;
         shoppingCart = new HashMap<>();
@@ -32,6 +32,7 @@ public class PurchaseAdapter extends BaseAdapter {
         for (Food food : foodList) {
             priceTable[food.FoodId] = food.Price;
         }
+        this.totalAmountView = totalAmountView;
     }
 
     @Override
@@ -74,6 +75,8 @@ public class PurchaseAdapter extends BaseAdapter {
         foodtype = (TextView) rowView.findViewById(R.id.plistitem_foodtype);
         foodprice = (TextView) rowView.findViewById(R.id.plistitem_foodprice);
 
+
+
         foodname.setTag(foodList.get(position).FoodId);
         quantity.setHint("MAX:" + foodList.get(position).Quantity);
         foodname.setText(foodList.get(position).FoodName);
@@ -100,7 +103,6 @@ public class PurchaseAdapter extends BaseAdapter {
                         if (iQuantity <= max) {
                             int foodid = Integer.parseInt(foodname.getTag().toString());
                             shoppingCart.put(foodid, iQuantity);
-                            
 
                         } else {
                             quantity.setText(s.toString().substring(0, s.length() - 1 ));
@@ -114,6 +116,7 @@ public class PurchaseAdapter extends BaseAdapter {
                         shoppingCart.remove(key);
                     }
                 }
+                totalAmountView.setText("$ " + getTotalAmount());
             }
         });
 

@@ -44,7 +44,7 @@ public class PurchaseFragment extends Fragment {
                         // Create ListView
                         listView = binding.purchaseListview;
                         listView.setItemsCanFocus(true);
-                        purchaseAdapter = new PurchaseAdapter(getActivity(), foodList);
+                        purchaseAdapter = new PurchaseAdapter(getActivity(), foodList, binding.purchaseTotalamount);
                         listView.setAdapter(purchaseAdapter);
 
                         binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
