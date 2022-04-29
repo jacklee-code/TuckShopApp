@@ -1,0 +1,10 @@
+package com.jacklee.tuckshopstudent;
+
+public class Food {
+    public int FoodId;
+    public String FoodName;
+    public String FoodType;
+    public int Quantity;
+    public Double Price;
+    public String Supplier;
+}

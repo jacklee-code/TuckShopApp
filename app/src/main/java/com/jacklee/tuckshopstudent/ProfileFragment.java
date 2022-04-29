@@ -87,7 +87,7 @@ public class ProfileFragment extends Fragment {
                         {
                             String response=((Exception)msg.obj).toString();
                             Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_LONG).show();
-                            Log.e("debug", response);
+                            Log.e("myerror", response);
                         }
                         break;
 
