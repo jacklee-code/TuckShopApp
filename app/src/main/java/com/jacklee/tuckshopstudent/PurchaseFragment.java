@@ -18,7 +18,9 @@ import com.google.gson.Gson;
 import com.jacklee.tuckshopstudent.databinding.FragmentPurchaseBinding;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PurchaseFragment extends Fragment {
 
@@ -29,7 +31,6 @@ public class PurchaseFragment extends Fragment {
     private PurchaseAdapter purchaseAdapter;
     private Handler mHandler;
 
-    private Account account;
 
     final String hostname = "https://iit3008-11379925.000webhostapp.com";
 
@@ -37,8 +38,6 @@ public class PurchaseFragment extends Fragment {
 
         binding = FragmentPurchaseBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        account = (Account) getActivity().getIntent().getSerializableExtra("account");
 
         mHandler = new Handler(){
             public void handleMessage(android.os.Message msg) {
@@ -60,7 +59,40 @@ public class PurchaseFragment extends Fragment {
                     case HandleCode.GetFoodListFailed:
                     {
                         Toast.makeText(getContext(), "Failed to get food list, please try again.", Toast.LENGTH_LONG);
+                        binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
+                        binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                    }
+                    break;
 
+                    case HandleCode.PurchaseSuccess:
+                    {
+                        Toast.makeText(getContext(), "The purchase was successful.", Toast.LENGTH_SHORT).show();
+                        RefreshUserProfile();
+                        RefreshFoodList();
+                    }
+                    break;
+
+
+                    case HandleCode.ProfileSuccess:
+                    {
+                        GlobalVariables.profile = new Gson().fromJson((String) msg.obj, StudentProfile.class);
+                        binding.purchaseBalance.setText("$ " + GlobalVariables.profile.Balance);
+                        binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
+                        binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                    }
+                    break;
+
+                    case HandleCode.ProfileFailed:
+                    {
+                        Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_LONG).show();
+                        binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
+                        binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                    }
+                    break;
+
+                    case HandleCode.PurchaseFailed:
+                    {
+                        Toast.makeText(getContext(), "The purchase was Failed.", Toast.LENGTH_SHORT).show();
                         binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
                         binding.purchaseLoading.setVisibility(View.INVISIBLE);
                     }
@@ -89,17 +121,74 @@ public class PurchaseFragment extends Fragment {
         // Get food list  (HTTP method)
         RefreshFoodList();
 
+        // Get Balance
+        RefreshUserProfile();
+
         return root;
+    }
+
+    private void RefreshUserProfile() {
+        binding.purchaseProgressBar.setVisibility(View.VISIBLE);
+        binding.purchaseLoading.setVisibility(View.VISIBLE);
+        Map<String, String> hm = new HashMap<>();
+        hm.put("username", GlobalVariables.account.Username);
+        hm.put("password", GlobalVariables.account.getPassword());
+
+        HttpUtil.sendHTTPRequest(hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
+
+            @Override
+            public void onFinish(String response) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.ProfileSuccess;
+                msg.obj = response;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.Error_Msg;
+                msg.obj = e;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnForbidden() {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.ProfileFailed;
+                mHandler.sendMessage(msg);
+            }
+        });
     }
 
     private void OnPurchaseClicked() {
         binding.purchasePurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Json");
-                builder.setMessage(new Gson().toJson(purchaseAdapter.getShoppingCart(account)));
-                builder.show();
+                binding.purchaseProgressBar.setVisibility(View.VISIBLE);
+                binding.purchaseLoading.setVisibility(View.VISIBLE);
+
+                String json = new Gson().toJson(purchaseAdapter.getShoppingCart(GlobalVariables.account));
+                HttpUtil.sendHTTPRequest(hostname + "/purchase.php", json, new HttpCallbackListener() {
+                    @Override
+                    public void onFinish(String response) {
+                        Message msg=mHandler.obtainMessage();
+                        msg.what = HandleCode.PurchaseSuccess;
+                        mHandler.sendMessage(msg);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("myerror", e.toString());
+                    }
+
+                    @Override
+                    public void OnForbidden() {
+                        Message msg=mHandler.obtainMessage();
+                        msg.what = HandleCode.PurchaseFailed;
+                        mHandler.sendMessage(msg);
+                    }
+                });
             }
         });
     }
@@ -108,7 +197,10 @@ public class PurchaseFragment extends Fragment {
         binding.purchaseProgressBar.setVisibility(View.VISIBLE);
         binding.purchaseLoading.setVisibility(View.VISIBLE);
 
-        HttpUtil.sendHTTPRequest(hostname + "/getFoodList.php", "", new HttpCallbackListener() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("UserId", GlobalVariables.profile.UserId);
+
+        HttpUtil.sendHTTPRequest(hostname + "/getFoodList.php", hashMap, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Message msg=mHandler.obtainMessage();

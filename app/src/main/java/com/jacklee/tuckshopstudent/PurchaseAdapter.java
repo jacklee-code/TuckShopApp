@@ -86,7 +86,8 @@ public class PurchaseAdapter extends BaseAdapter {
 
 
         foodname.setTag(foodList.get(position).FoodId);
-        quantity.setHint("MAX:" + foodList.get(position).Quantity);
+        quantity.setHint(foodList.get(position).Banned ? "Banned" : "MAX:" + foodList.get(position).Quantity);
+        quantity.setEnabled(!foodList.get(position).Banned);
         foodname.setText(foodList.get(position).FoodName);
         foodtype.setText(foodList.get(position).FoodType);
         foodprice.setText("$" + String.format("%.2f", foodList.get(position).Price));

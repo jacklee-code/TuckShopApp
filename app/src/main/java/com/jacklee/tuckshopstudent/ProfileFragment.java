@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,8 +30,6 @@ import java.util.Map;
 
 public class ProfileFragment extends Fragment {
 
-    Account account;
-    StudentProfile profile;
     private Handler mHandler;
 
     final String hostname = "https://iit3008-11379925.000webhostapp.com";
@@ -42,7 +41,6 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        account = (Account) getActivity().getIntent().getSerializableExtra("account");
 
         mHandler = new Handler(){
             public void handleMessage(android.os.Message msg) {
@@ -57,12 +55,12 @@ public class ProfileFragment extends Fragment {
 
                     case HandleCode.ProfileSuccess:
                     {
-                        profile = new Gson().fromJson((String) msg.obj, StudentProfile.class);
-                        binding.profileFullname.setText(profile.Fullname);
-                        binding.profileUserid.setText(profile.UserId);
-                        binding.profileUsername.setText(profile.Username);
-                        binding.profileAccounttype.setText(profile.AccountType);
-                        binding.profileBalance.setText("$ " + String.valueOf(profile.Balance));
+                        GlobalVariables.profile = new Gson().fromJson((String) msg.obj, StudentProfile.class);
+                        binding.profileFullname.setText(GlobalVariables.profile.Fullname);
+                        binding.profileUserid.setText(GlobalVariables.profile.UserId);
+                        binding.profileUsername.setText(GlobalVariables.profile.Username);
+                        binding.profileAccounttype.setText(GlobalVariables.profile.AccountType);
+                        binding.profileBalance.setText("$ " + String.valueOf(GlobalVariables.profile.Balance));
                         binding.profileProgressBar.setVisibility(View.INVISIBLE);
                         binding.profileLoading.setVisibility(View.INVISIBLE);
                     }
@@ -120,9 +118,9 @@ public class ProfileFragment extends Fragment {
                         String number = input.getText().toString();
                         if (isValidDecimal(number)) {
                             Map<String, String> topupparams = new HashMap<>();
-                            topupparams.put("username", account.Username);
-                            topupparams.put("password", account.getPassword());
-                            topupparams.put("userId", profile.UserId);
+                            topupparams.put("username", GlobalVariables.account.Username);
+                            topupparams.put("password", GlobalVariables.account.getPassword());
+                            topupparams.put("userId", GlobalVariables.profile.UserId);
                             topupparams.put("amount", number);
 
                             binding.profileLoading.setVisibility(View.VISIBLE);
@@ -175,8 +173,8 @@ public class ProfileFragment extends Fragment {
         binding.profileProgressBar.setVisibility(View.VISIBLE);
         binding.profileLoading.setVisibility(View.VISIBLE);
         Map<String, String> hm = new HashMap<>();
-        hm.put("username", account.Username);
-        hm.put("password", account.getPassword());
+        hm.put("username", GlobalVariables.account.Username);
+        hm.put("password", GlobalVariables.account.getPassword());
 
         HttpUtil.sendHTTPRequest(hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
 

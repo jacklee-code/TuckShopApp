@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 // Open New Activity
                                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                                i.putExtra("account", account);
+                                GlobalVariables.account = account;
                                 startActivity(i);
                         }
                         break;
