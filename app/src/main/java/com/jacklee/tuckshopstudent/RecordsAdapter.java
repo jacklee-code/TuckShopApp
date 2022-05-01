@@ -70,7 +70,7 @@ public class RecordsAdapter extends BaseAdapter {
 
         recordid.setText("#" + buyList.get(position).RecordId);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH時mm分");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         recorddate.setText(dateFormat.format(buyList.get(position).DateTime));
 
