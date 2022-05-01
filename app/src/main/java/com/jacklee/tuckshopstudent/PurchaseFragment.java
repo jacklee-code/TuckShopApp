@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.jacklee.tuckshopstudent.databinding.FragmentPurchaseBinding;
 
 import java.util.Arrays;
@@ -30,9 +31,6 @@ public class PurchaseFragment extends Fragment {
     private ListView listView;
     private PurchaseAdapter purchaseAdapter;
     private Handler mHandler;
-
-
-    final String hostname = "https://iit3008-11379925.000webhostapp.com";
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -134,7 +132,7 @@ public class PurchaseFragment extends Fragment {
         hm.put("username", GlobalVariables.account.Username);
         hm.put("password", GlobalVariables.account.getPassword());
 
-        HttpUtil.sendHTTPRequest(hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
 
             @Override
             public void onFinish(String response) {
@@ -169,7 +167,7 @@ public class PurchaseFragment extends Fragment {
                 binding.purchaseLoading.setVisibility(View.VISIBLE);
 
                 String json = new Gson().toJson(purchaseAdapter.getShoppingCart(GlobalVariables.account));
-                HttpUtil.sendHTTPRequest(hostname + "/purchase.php", json, new HttpCallbackListener() {
+                HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/purchase.php", json, new HttpCallbackListener() {
                     @Override
                     public void onFinish(String response) {
                         Message msg=mHandler.obtainMessage();
@@ -200,7 +198,7 @@ public class PurchaseFragment extends Fragment {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("UserId", GlobalVariables.profile.UserId);
 
-        HttpUtil.sendHTTPRequest(hostname + "/getFoodList.php", hashMap, new HttpCallbackListener() {
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getFoodList.php", hashMap, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Message msg=mHandler.obtainMessage();

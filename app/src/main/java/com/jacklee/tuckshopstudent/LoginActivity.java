@@ -51,8 +51,6 @@ public class LoginActivity extends AppCompatActivity {
 
     Account account;
 
-    final String hostname = "https://iit3008-11379925.000webhostapp.com";
-
     private Handler mHandler;
 
     @Override
@@ -260,7 +258,7 @@ public class LoginActivity extends AppCompatActivity {
                     ac.setPassword(reg_password.getText().toString());
                     ac.Fullname = reg_fullname.getText().toString();
 
-                    String url = hostname + "/register.php";
+                    String url = GlobalVariables.hostname + "/register.php";
                     Map<String, String> hm = new HashMap<>();
                     hm.put("username", ac.Username);
                     hm.put("password", ac.getPassword());
@@ -309,7 +307,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void Login(String username, String password) {
-        String url = hostname + "/login.php";
+        String url = GlobalVariables.hostname + "/login.php";
         Map<String, String> hm = new HashMap<>();
         Account ac = new Account();
         ac.Username = username;
