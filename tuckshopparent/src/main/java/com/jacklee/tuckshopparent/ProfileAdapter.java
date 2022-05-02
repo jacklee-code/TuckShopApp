@@ -1,20 +1,26 @@
 package com.jacklee.tuckshopparent;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProfileAdapter extends BaseAdapter {
 
@@ -28,6 +34,7 @@ public class ProfileAdapter extends BaseAdapter {
         this.context = context;
         this.studentList = studentList;
         this.handler = handler;
+        this.account = parentAccount;
     }
 
     @Override
@@ -67,18 +74,49 @@ public class ProfileAdapter extends BaseAdapter {
         profiletopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: topup and send msg to handler when success
-                HashMap<String, String> hashMap = new HashMap<>();
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Top-up");
+                builder.setMessage("Top-up amount:");
+                builder.setCancelable(false);
 
-                // Test Handler;
-                Message msg = handler.obtainMessage();
-                msg.what = HandleCode.Test;
-                handler.sendMessage(msg);
+                final EditText input = new EditText(context);
+
+                input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                builder.setView(input);
+                builder.setPositiveButton("Top-up", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String number = input.getText().toString();
+                        if (isValidDecimal(number)) {
+                            TopUpDetail topUpDetail = new TopUpDetail();
+                            topUpDetail.amount = number;
+                            topUpDetail.targetId = studentList.get(position).UserId;
+                            Message msg = handler.obtainMessage();
+                            msg.what = HandleCode.DoTopUp;
+                            msg.obj = topUpDetail;
+                            handler.sendMessage(msg);
+                        } else {
+                            Toast.makeText(context, "Please input a valid value.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
             }
         });
 
         return rowView;
+    }
+
+    private boolean isValidDecimal(String numberStr) {
+        return numberStr.matches("^\\d+$$") || numberStr.matches("\\d+\\.\\d+$");
     }
 
 }

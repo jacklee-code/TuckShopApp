@@ -337,7 +337,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginSuccess(String username) {
         String welcome = getString(R.string.welcome) + username;
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_SHORT).show();
     }
 
     private void showLoginFailed(String fail_msg) {

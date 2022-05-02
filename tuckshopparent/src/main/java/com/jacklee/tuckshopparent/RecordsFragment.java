@@ -70,7 +70,7 @@ public class RecordsFragment extends Fragment {
                         case HandleCode.Error_Msg:
                         {
                             String response=((Exception)msg.obj).toString();
-                            Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_SHORT).show();
                             Log.e("myerror", response);
                         }
                         break;

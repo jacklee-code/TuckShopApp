@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
-import com.jacklee.tuckshopparent.databinding.FragmentPurchaseBinding;
+import com.jacklee.tuckshopparent.databinding.FragmentBanBinding;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class BanFragment extends Fragment {
 
-    private FragmentPurchaseBinding binding;
+    private FragmentBanBinding binding;
 
     private List<Food> foodList;
     private ListView listView;
@@ -32,7 +32,7 @@ public class BanFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentPurchaseBinding.inflate(inflater, container, false);
+        binding = FragmentBanBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         mHandler = new Handler(){
@@ -55,7 +55,7 @@ public class BanFragment extends Fragment {
 
                         case HandleCode.GetFoodListFailed:
                         {
-                            Toast.makeText(getContext(), "Failed to get food list, please try again.", Toast.LENGTH_LONG);
+                            Toast.makeText(getContext(), "Failed to get food list, please try again.", Toast.LENGTH_SHORT);
                             binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
                             binding.purchaseLoading.setVisibility(View.INVISIBLE);
                         }
@@ -72,7 +72,7 @@ public class BanFragment extends Fragment {
 
                         case HandleCode.ProfileSuccess:
                         {
-                            GlobalVariables.profiles = new Gson().fromJson((String) msg.obj, StudentProfile[].class);
+                            GlobalVariables.profiles = Arrays.asList(new Gson().fromJson((String) msg.obj, StudentProfile[].class));
                             //binding.purchaseBalance.setText("$ " + GlobalVariables.profile.Balance);
                             binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
                             binding.purchaseLoading.setVisibility(View.INVISIBLE);
@@ -81,7 +81,7 @@ public class BanFragment extends Fragment {
 
                         case HandleCode.ProfileFailed:
                         {
-                            Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_SHORT).show();
                             binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
                             binding.purchaseLoading.setVisibility(View.INVISIBLE);
                         }
@@ -98,7 +98,7 @@ public class BanFragment extends Fragment {
                         case HandleCode.Error_Msg:
                         {
                             String response=((Exception)msg.obj).toString();
-                            Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_SHORT).show();
                             Log.e("myerror", response);
                         }
                         break;

@@ -9,7 +9,6 @@
 
     try {
         $userid = loginAndGetUserId($db, $username, $password);
-        echo $userid;
         if (strlen($userid) < 1) {
             http_response_code(403);
             return;

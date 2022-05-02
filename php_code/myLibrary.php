@@ -23,6 +23,17 @@
         return strtolower($results["type"]) == "teacher";
     }
 
+    function getUserTypeStringLower($db, $userid) {
+        $sql = "SELECT t.TypeName AS type FROM Accounts AS a, AccountType AS t WHERE a.TypeId = t.TypeId AND UserId = :userid;";
+        $statement = $db->prepare($sql);
+        $statement->bindParam(":userid", $userid);
+        $statement->execute();
+        $results = $statement->fetch(PDO::FETCH_ASSOC);
+        if (count($results) == 0)
+            return "";
+        return strtolower($results["type"]);
+    }
+
     function getUserIdByUsername($db, $username) {
         $sql = "SELECT UserId AS id FROM Accounts WHERE Username = :username;";
         $statement = $db->prepare($sql);

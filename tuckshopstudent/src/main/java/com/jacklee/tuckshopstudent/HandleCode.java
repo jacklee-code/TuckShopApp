@@ -21,7 +21,7 @@ public class HandleCode {
     public final static int GetBuyRecordsSuccess = 11;
     public final static int GetBuyRecordsFailed = 12;
 
-    public final static int PurchaseSuccess = 11;
-    public final static int PurchaseFailed = 12;
+    public final static int PurchaseSuccess = 13;
+    public final static int PurchaseFailed = 14;
 
 }

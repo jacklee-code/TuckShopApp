@@ -13,6 +13,7 @@ public class HandleCode {
     public final static int ProfileSuccess = 5;
     public final static int ProfileFailed = 6;
 
+    public final static int DoTopUp = 78;
     public final static int TopupSuccess = 7;
     public final static int TopupFailed = 8;
 
@@ -22,7 +23,7 @@ public class HandleCode {
     public final static int GetBuyRecordsSuccess = 11;
     public final static int GetBuyRecordsFailed = 12;
 
-    public final static int PurchaseSuccess = 11;
-    public final static int PurchaseFailed = 12;
+    public final static int PurchaseSuccess = 13;
+    public final static int PurchaseFailed = 14;
 
 }
