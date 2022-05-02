@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:orientation="horizontal"
@@ -21,7 +22,7 @@
         android:id="@+id/plistitem_name"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4"
+        android:layout_weight="3"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
         android:text="Jack Lee" />
@@ -31,7 +32,7 @@
         android:id="@+id/plistitem_balance"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2.5"
+        android:layout_weight="2"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
         android:text="$0.00" />
@@ -46,5 +47,13 @@
         android:paddingRight="10dp"
         android:text="TOP UP" />
 
+
+    <ImageButton
+        android:id="@+id/plistitem_unlink"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1.5"
+        android:src="@android:drawable/ic_delete" />
 
 </LinearLayout>

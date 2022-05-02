@@ -31,5 +31,8 @@ public class HandleCode {
     public final static int LinkSuccess = 15;
     public final static int LinkFailed = 16;
     public final static int LinkRepeated = 17;
+    public final static int DoUnlink = 18;
+    public final static int UnlinkSuccess = 19;
+    public final static int UnlinkFailed = 20;
 
 }

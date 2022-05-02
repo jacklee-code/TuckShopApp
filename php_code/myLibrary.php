@@ -62,10 +62,11 @@
         $statement->bindParam(":username", $username);
         $statement->bindParam(":password", $password);
         $statement->execute();
-        $results = $statement->fetch(PDO::FETCH_ASSOC);
-        if (count($results) == 0)
+
+        if ($statement->rowCount() == 0)
             return "";
 
+        $results = $statement->fetch(PDO::FETCH_ASSOC);
         return $results["id"];
     }
 

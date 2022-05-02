@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,15 +27,13 @@ public class ProfileAdapter extends BaseAdapter {
 
     private Context context;
     private List<StudentProfile> studentList;
-    private Account account;
     private Handler handler;
 
     LayoutInflater mInflater;
-    public ProfileAdapter(Context context, List<StudentProfile> studentList, Account parentAccount, Handler handler){
+    public ProfileAdapter(Context context, List<StudentProfile> studentList, Handler handler){
         this.context = context;
         this.studentList = studentList;
         this.handler = handler;
-        this.account = parentAccount;
     }
 
     @Override
@@ -60,12 +59,15 @@ public class ProfileAdapter extends BaseAdapter {
         rowView = inflater.inflate(R.layout.profile_adapter, parent, false);
 
         Button profiletopup;
+        ImageButton profileunlink;
+
         TextView profileid, profilename, profilebalance;
 
         profileid = (TextView) rowView.findViewById(R.id.plistitem_id);
         profilename = (TextView) rowView.findViewById(R.id.plistitem_name);
         profilebalance = (TextView) rowView.findViewById(R.id.plistitem_balance);
         profiletopup = (Button) rowView.findViewById(R.id.plistitem_topup);
+        profileunlink = (ImageButton) rowView.findViewById(R.id.plistitem_unlink);
 
         profileid.setText("#" + studentList.get(position).UserId);
         profilename.setText(studentList.get(position).Fullname);
@@ -100,6 +102,34 @@ public class ProfileAdapter extends BaseAdapter {
                         } else {
                             Toast.makeText(context, "Please input a valid value.", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            }
+        });
+
+        profileunlink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Unlink Confirmation");
+                builder.setMessage("\nAre you sure you want to unlink this account?\n");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Yes - Unlink", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Message msg = handler.obtainMessage();
+                        msg.what = HandleCode.DoUnlink;
+                        msg.obj = studentList.get(position).UserId;
+                        handler.sendMessage(msg);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

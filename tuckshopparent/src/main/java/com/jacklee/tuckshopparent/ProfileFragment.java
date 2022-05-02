@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -65,7 +66,7 @@ public class ProfileFragment extends Fragment {
 
                             listView = binding.profileListview;
                             listView.setItemsCanFocus(true);
-                            adapter = new ProfileAdapter(getActivity(), GlobalVariables.profiles, GlobalVariables.account, mHandler);
+                            adapter = new ProfileAdapter(getActivity(), GlobalVariables.profiles, mHandler);
                             listView.setAdapter(adapter);
 
                             binding.profileProgressBar.setVisibility(View.INVISIBLE);
@@ -110,7 +111,7 @@ public class ProfileFragment extends Fragment {
                         case HandleCode.LinkFailed:
                         {
                             link_progressBar.setVisibility(View.INVISIBLE);
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                             alert.setTitle("Link Failed");
                             alert.setMessage("\nStudent username/password may be incorrect. \nPlease try again.\n");
                             alert.setPositiveButton("OK", null);
@@ -120,8 +121,9 @@ public class ProfileFragment extends Fragment {
 
                         case HandleCode.LinkRepeated:
                         {
+                            Log.e("mytest", "repeated");
                             link_progressBar.setVisibility(View.INVISIBLE);
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                             alert.setTitle("Link Failed");
                             alert.setMessage("The student has been linked.");
                             alert.setPositiveButton("OK", null);
@@ -129,11 +131,17 @@ public class ProfileFragment extends Fragment {
                         }
                         break;
 
-                        case HandleCode.RegisterSuccess:
+                        case HandleCode.DoUnlink:
+                        {
+                            doUnLink((String) msg.obj);
+                        }
+                        break;
+
+                        case HandleCode.LinkSuccess:
                         {
                             Dialog dialog = (Dialog) msg.obj;
                             dialog.dismiss();
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                             alert.setTitle("Congratulations");
                             alert.setMessage("Account successfully linked");
                             alert.setPositiveButton("OK", null);
@@ -141,7 +149,19 @@ public class ProfileFragment extends Fragment {
 
                             refreshUserProfile();
                         }
+                        break;
 
+                        case HandleCode.UnlinkSuccess:
+                        {
+                            Toast.makeText(getContext(), "Unlink Successful", Toast.LENGTH_SHORT).show();
+                            refreshUserProfile();
+                        }
+                        break;
+
+                        case HandleCode.UnlinkFailed:
+                        {
+                            Toast.makeText(getContext(), "Unlink Failed", Toast.LENGTH_SHORT).show();
+                        }
                         break;
 
                         default:
@@ -168,16 +188,57 @@ public class ProfileFragment extends Fragment {
         return root;
     }
 
+    private void doUnLink(String targetId) {
+        binding.profileProgressBar.setVisibility(View.VISIBLE);
+        binding.profileLoading.setVisibility(View.VISIBLE);
+
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("username", GlobalVariables.account.Username);
+        hashMap.put("password", GlobalVariables.account.getPassword());
+        hashMap.put("targetid", targetId);
+
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/unlink.php", hashMap, new HttpCallbackListener() {
+
+            @Override
+            public void onFinish(String response) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.UnlinkSuccess;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.Error_Msg;
+                msg.obj = e;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnForbidden() {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.UnlinkFailed;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnBadRequest() {
+
+            }
+        });
+
+    }
+
     private void showLinkLoginDialog() {
         View link_view;
 
         EditText link_username, link_password;
-        Button link_link;
+        Button link_link, link_cancel;
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         link_view = inflater.inflate(R.layout.dialog_link,null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Create new link");
         builder.setCancelable(false);
         builder.setView(link_view);
@@ -187,6 +248,7 @@ public class ProfileFragment extends Fragment {
         link_username = (EditText) link_view.findViewById(R.id.dialog_username);
         link_password = (EditText) link_view.findViewById(R.id.dialog_password);
         link_link = (Button) link_view.findViewById(R.id.dialog_link);
+        link_cancel = (Button) link_view.findViewById(R.id.dialog_cancel);
         link_progressBar = (ProgressBar) link_view.findViewById(R.id.dialog_progressBar);
 
         TextWatcher link_TextWatcher = new TextWatcher() {
@@ -278,6 +340,7 @@ public class ProfileFragment extends Fragment {
         link_password.addTextChangedListener(link_TextWatcher);
         link_password.addTextChangedListener(link_TextWatcher);
         link_link.setOnClickListener(link_clickListener);
+        link_cancel.setOnClickListener(link_clickListener);
     }
 
     private void topUp(String targetId, String amount) {
