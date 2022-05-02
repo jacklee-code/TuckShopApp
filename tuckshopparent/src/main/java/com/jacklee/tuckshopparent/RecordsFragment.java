@@ -127,6 +127,11 @@ public class RecordsFragment extends Fragment {
                 msg.what = HandleCode.GetBuyRecordsFailed;
                 mHandler.sendMessage(msg);
             }
+
+            @Override
+            public void OnBadRequest() {
+
+            }
         });
     }
 }

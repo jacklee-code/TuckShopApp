@@ -183,7 +183,6 @@ public class LoginActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(LoginActivity.this);
         register_view = inflater.inflate(R.layout.activity_register,null);
 
-        //-----------產生登入視窗--------
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Sign Up");
         builder.setCancelable(false);
@@ -282,6 +281,11 @@ public class LoginActivity extends AppCompatActivity {
                             msg.obj = dialog;
                             mHandler.sendMessage(msg);
                         }
+
+                        @Override
+                        public void OnBadRequest() {
+
+                        }
                     });
                 }
             }
@@ -328,6 +332,11 @@ public class LoginActivity extends AppCompatActivity {
                 Message msg=mHandler.obtainMessage();
                 msg.what = HandleCode.LoginFailed;
                 mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnBadRequest() {
+
             }
         });
     }

@@ -111,8 +111,19 @@ public class ProfileFragment extends Fragment {
                         {
                             link_progressBar.setVisibility(View.INVISIBLE);
                             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                            alert.setTitle("Registration Failed");
-                            alert.setMessage("The username you have chosen may already be in use.");
+                            alert.setTitle("Link Failed");
+                            alert.setMessage("\nStudent username/password may be incorrect. \nPlease try again.\n");
+                            alert.setPositiveButton("OK", null);
+                            alert.show();
+                        }
+                        break;
+
+                        case HandleCode.LinkRepeated:
+                        {
+                            link_progressBar.setVisibility(View.INVISIBLE);
+                            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                            alert.setTitle("Link Failed");
+                            alert.setMessage("The student has been linked.");
                             alert.setPositiveButton("OK", null);
                             alert.show();
                         }
@@ -147,7 +158,7 @@ public class ProfileFragment extends Fragment {
         binding.profileLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                showLinkLoginDialog();
             }
         });
 
@@ -166,7 +177,6 @@ public class ProfileFragment extends Fragment {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         link_view = inflater.inflate(R.layout.dialog_link,null);
 
-        //-----------產生登入視窗--------
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Create new link");
         builder.setCancelable(false);
@@ -251,6 +261,14 @@ public class ProfileFragment extends Fragment {
                             msg.obj = dialog;
                             mHandler.sendMessage(msg);
                         }
+
+                        @Override
+                        public void OnBadRequest() {
+                            Message msg=mHandler.obtainMessage();
+                            msg.what = HandleCode.LinkRepeated;
+                            msg.obj = dialog;
+                            mHandler.sendMessage(msg);
+                        }
                     });
                 }
             }
@@ -295,6 +313,11 @@ public class ProfileFragment extends Fragment {
                 msg.what = HandleCode.TopupFailed;
                 mHandler.sendMessage(msg);
             }
+
+            @Override
+            public void OnBadRequest() {
+
+            }
         });
     }
 
@@ -328,6 +351,11 @@ public class ProfileFragment extends Fragment {
                 Message msg=mHandler.obtainMessage();
                 msg.what = HandleCode.ProfileFailed;
                 mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnBadRequest() {
+
             }
         });
     }

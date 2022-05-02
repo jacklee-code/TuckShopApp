@@ -156,6 +156,11 @@ public class BanFragment extends Fragment {
                 msg.what = HandleCode.ProfileFailed;
                 mHandler.sendMessage(msg);
             }
+
+            @Override
+            public void OnBadRequest() {
+
+            }
         });
     }
 
@@ -186,6 +191,11 @@ public class BanFragment extends Fragment {
                 Message msg=mHandler.obtainMessage();
                 msg.what = HandleCode.GetFoodListFailed;
                 mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnBadRequest() {
+
             }
         });
     }

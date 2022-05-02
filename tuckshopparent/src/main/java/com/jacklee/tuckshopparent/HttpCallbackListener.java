@@ -7,4 +7,6 @@ public interface HttpCallbackListener {
     void onError(Exception e);
 
     void OnForbidden();
+
+    void OnBadRequest();
 }

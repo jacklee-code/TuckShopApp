@@ -1,5 +1,7 @@
 package com.jacklee.tuckshopparent;
 
+import java.security.PublicKey;
+
 public class HandleCode {
     public final static int Error_Msg = 999;
     public final static int Test = -1;
@@ -28,5 +30,6 @@ public class HandleCode {
 
     public final static int LinkSuccess = 15;
     public final static int LinkFailed = 16;
+    public final static int LinkRepeated = 17;
 
 }
