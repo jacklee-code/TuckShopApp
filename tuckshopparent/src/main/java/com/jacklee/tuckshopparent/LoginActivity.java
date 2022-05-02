@@ -35,13 +35,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button registerButton;
     private ProgressBar loadingProgressBar, reg_progressbar;
 
-    private View register_view;
-
-    private EditText reg_username, reg_password, reg_password2, reg_fullname;
-    private Button reg_register, reg_cancel;
-
-    Account account;
-
     private Handler mHandler;
 
     @Override
@@ -51,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
-        loginButton = findViewById(R.id.login);
+        loginButton = findViewById(R.id.dialog_link);
         loadingProgressBar =findViewById(R.id.loading);
         registerButton = findViewById(R.id.register);
 
@@ -182,6 +175,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void ShowRegisterDialog() {
+        View register_view;
+
+        EditText reg_username, reg_password, reg_password2, reg_fullname;
+        Button reg_register, reg_cancel;
+
         LayoutInflater inflater = LayoutInflater.from(LoginActivity.this);
         register_view = inflater.inflate(R.layout.activity_register,null);
 

@@ -39,13 +39,6 @@
         http_response_code(403);
     }
 
-    if($statement->rowCount() < 1) {
-       http_response_code(403);
-       return;
-    } else {
-       http_response_code(200);
-    }
-
     $json = json_encode($results, JSON_NUMERIC_CHECK);
     echo $json;
 ?>

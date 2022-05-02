@@ -26,4 +26,7 @@ public class HandleCode {
     public final static int PurchaseSuccess = 13;
     public final static int PurchaseFailed = 14;
 
+    public final static int LinkSuccess = 15;
+    public final static int LinkFailed = 16;
+
 }
