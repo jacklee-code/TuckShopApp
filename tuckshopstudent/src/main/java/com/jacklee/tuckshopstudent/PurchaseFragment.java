@@ -39,74 +39,78 @@ public class PurchaseFragment extends Fragment {
 
         mHandler = new Handler(){
             public void handleMessage(android.os.Message msg) {
-                switch (msg.what) {
-                    case HandleCode.GetFoodListSuccess:
-                    {
-                        foodList = Arrays.asList(new Gson().fromJson((String) msg.obj, Food[].class));
-                        // Create ListView
-                        listView = binding.purchaseListview;
-                        listView.setItemsCanFocus(true);
-                        purchaseAdapter = new PurchaseAdapter(getActivity(), foodList, binding.purchaseTotalamount);
-                        listView.setAdapter(purchaseAdapter);
+                try {
+                    switch (msg.what) {
+                        case HandleCode.GetFoodListSuccess:
+                        {
+                            foodList = Arrays.asList(new Gson().fromJson((String) msg.obj, Food[].class));
+                            // Create ListView
+                            listView = binding.purchaseListview;
+                            listView.setItemsCanFocus(true);
+                            purchaseAdapter = new PurchaseAdapter(getActivity(), foodList, binding.purchaseTotalamount);
+                            listView.setAdapter(purchaseAdapter);
 
-                        binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                        binding.purchaseLoading.setVisibility(View.INVISIBLE);
-                    }
-                    break;
-
-                    case HandleCode.GetFoodListFailed:
-                    {
-                        Toast.makeText(getContext(), "Failed to get food list, please try again.", Toast.LENGTH_LONG);
-                        binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                        binding.purchaseLoading.setVisibility(View.INVISIBLE);
-                    }
-                    break;
-
-                    case HandleCode.PurchaseSuccess:
-                    {
-                        Toast.makeText(getContext(), "The purchase was successful.", Toast.LENGTH_SHORT).show();
-                        RefreshUserProfile();
-                        RefreshFoodList();
-                    }
-                    break;
-
-
-                    case HandleCode.ProfileSuccess:
-                    {
-                        GlobalVariables.profile = new Gson().fromJson((String) msg.obj, StudentProfile.class);
-                        binding.purchaseBalance.setText("$ " + GlobalVariables.profile.Balance);
-                        binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                        binding.purchaseLoading.setVisibility(View.INVISIBLE);
-                    }
-                    break;
-
-                    case HandleCode.ProfileFailed:
-                    {
-                        Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_LONG).show();
-                        binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                        binding.purchaseLoading.setVisibility(View.INVISIBLE);
-                    }
-                    break;
-
-                    case HandleCode.PurchaseFailed:
-                    {
-                        Toast.makeText(getContext(), "The purchase was Failed.", Toast.LENGTH_SHORT).show();
-                        binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                        binding.purchaseLoading.setVisibility(View.INVISIBLE);
-                    }
-                    break;
-
-                    case HandleCode.Error_Msg:
-                    {
-                        String response=((Exception)msg.obj).toString();
-                        Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_LONG).show();
-                        Log.e("myerror", response);
-                    }
-                    break;
-
-
-                    default:
+                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
+                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                        }
                         break;
+
+                        case HandleCode.GetFoodListFailed:
+                        {
+                            Toast.makeText(getContext(), "Failed to get food list, please try again.", Toast.LENGTH_LONG);
+                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
+                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+
+                        case HandleCode.PurchaseSuccess:
+                        {
+                            Toast.makeText(getContext(), "The purchase was successful.", Toast.LENGTH_SHORT).show();
+                            RefreshUserProfile();
+                            RefreshFoodList();
+                        }
+                        break;
+
+
+                        case HandleCode.ProfileSuccess:
+                        {
+                            GlobalVariables.profile = new Gson().fromJson((String) msg.obj, StudentProfile.class);
+                            binding.purchaseBalance.setText("$ " + GlobalVariables.profile.Balance);
+                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
+                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+
+                        case HandleCode.ProfileFailed:
+                        {
+                            Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_LONG).show();
+                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
+                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+
+                        case HandleCode.PurchaseFailed:
+                        {
+                            Toast.makeText(getContext(), "The purchase was Failed.", Toast.LENGTH_SHORT).show();
+                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
+                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+
+                        case HandleCode.Error_Msg:
+                        {
+                            String response=((Exception)msg.obj).toString();
+                            Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_LONG).show();
+                            Log.e("myerror", response);
+                        }
+                        break;
+
+
+                        default:
+                            break;
+                    }
+                } catch (Exception e) {
+
                 }
 
 

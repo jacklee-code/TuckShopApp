@@ -41,49 +41,53 @@ public class RecordsFragment extends Fragment {
 
         mHandler = new Handler(){
             public void handleMessage(android.os.Message msg) {
-                switch (msg.what) {
-                    case HandleCode.GetBuyRecordsSuccess:
-                    {
-                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-                        List<BuyRecord> records = Arrays.asList(gson.fromJson((String)msg.obj, BuyRecord[].class));
 
-                        // Create ListView
-                        listView = binding.recordsListview;
-                        listView.setItemsCanFocus(true);
-                        recordsAdapter = new RecordsAdapter(getActivity(), records);
-                        listView.setAdapter(recordsAdapter);
+                try {
+                    switch (msg.what) {
+                        case HandleCode.GetBuyRecordsSuccess:
+                        {
+                            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                            List<BuyRecord> records = Arrays.asList(gson.fromJson((String)msg.obj, BuyRecord[].class));
 
-                        // Calculate total amount
-                        double sum = 0.00;
-                        for (BuyRecord record : records) {
-                            sum += record.getTotalAmount();
+                            // Create ListView
+                            listView = binding.recordsListview;
+                            listView.setItemsCanFocus(true);
+                            recordsAdapter = new RecordsAdapter(getActivity(), records);
+                            listView.setAdapter(recordsAdapter);
+
+                            // Calculate total amount
+                            double sum = 0.00;
+                            for (BuyRecord record : records) {
+                                sum += record.getTotalAmount();
+                            }
+
+                            binding.recordsTotalconsumption.setText("$ " + String.format("%.2f", sum));
                         }
-
-                        binding.recordsTotalconsumption.setText("$ " + String.format("%.2f", sum));
-                    }
-                    break;
-
-                    case HandleCode.GetBuyRecordsFailed:
-                    {
-
-                    }
-                    break;
-
-                    case HandleCode.Error_Msg:
-                    {
-                        String response=((Exception)msg.obj).toString();
-                        Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_LONG).show();
-                        Log.e("myerror", response);
-                    }
-                    break;
-
-                    default:
                         break;
+
+                        case HandleCode.GetBuyRecordsFailed:
+                        {
+
+                        }
+                        break;
+
+                        case HandleCode.Error_Msg:
+                        {
+                            String response=((Exception)msg.obj).toString();
+                            Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_LONG).show();
+                            Log.e("myerror", response);
+                        }
+                        break;
+
+                        default:
+                            break;
+                    }
+
+                    binding.recordsLoading.setVisibility(View.INVISIBLE);
+                    binding.recordsProgressBar.setVisibility(View.INVISIBLE);
+                } catch (Exception e) {
+
                 }
-
-                binding.recordsLoading.setVisibility(View.INVISIBLE);
-                binding.recordsProgressBar.setVisibility(View.INVISIBLE);
-
             };
         };
         GetBuyRecords();

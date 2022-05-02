@@ -44,44 +44,45 @@ public class ProfileFragment extends Fragment {
 
         mHandler = new Handler(){
             public void handleMessage(android.os.Message msg) {
-                switch (msg.what) {
-                    case HandleCode.ProfileFailed:
-                    {
-                        Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_LONG).show();
-                        binding.profileProgressBar.setVisibility(View.INVISIBLE);
-                        binding.profileLoading.setVisibility(View.INVISIBLE);
-                    }
-                    break;
+                try {
+                    switch (msg.what) {
+                        case HandleCode.ProfileFailed:
+                        {
+                            Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_LONG).show();
+                            binding.profileProgressBar.setVisibility(View.INVISIBLE);
+                            binding.profileLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
 
-                    case HandleCode.ProfileSuccess:
-                    {
-                        GlobalVariables.profile = new Gson().fromJson((String) msg.obj, StudentProfile.class);
-                        binding.profileFullname.setText(GlobalVariables.profile.Fullname);
-                        binding.profileUserid.setText(GlobalVariables.profile.UserId);
-                        binding.profileUsername.setText(GlobalVariables.profile.Username);
-                        binding.profileAccounttype.setText(GlobalVariables.profile.AccountType);
-                        binding.profileBalance.setText("$ " + String.valueOf(GlobalVariables.profile.Balance));
-                        binding.profileProgressBar.setVisibility(View.INVISIBLE);
-                        binding.profileLoading.setVisibility(View.INVISIBLE);
-                    }
-                    break;
+                        case HandleCode.ProfileSuccess:
+                        {
+                            GlobalVariables.profile = new Gson().fromJson((String) msg.obj, StudentProfile.class);
+                            binding.profileFullname.setText(GlobalVariables.profile.Fullname);
+                            binding.profileUserid.setText(GlobalVariables.profile.UserId);
+                            binding.profileUsername.setText(GlobalVariables.profile.Username);
+                            binding.profileAccounttype.setText(GlobalVariables.profile.AccountType);
+                            binding.profileBalance.setText("$ " + String.valueOf(GlobalVariables.profile.Balance));
+                            binding.profileProgressBar.setVisibility(View.INVISIBLE);
+                            binding.profileLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
 
-                    case HandleCode.TopupSuccess:
-                    {
-                        Dialog dialog = (Dialog) msg.obj;
-                        dialog.dismiss();
-                        Toast.makeText(getContext(), "Top-up successful", Toast.LENGTH_LONG).show();
-                        refreshUserProfile();
-                    }
-                    break;
+                        case HandleCode.TopupSuccess:
+                        {
+                            Dialog dialog = (Dialog) msg.obj;
+                            dialog.dismiss();
+                            Toast.makeText(getContext(), "Top-up successful", Toast.LENGTH_LONG).show();
+                            refreshUserProfile();
+                        }
+                        break;
 
-                    case HandleCode.TopupFailed:
-                    {
-                        Toast.makeText(getContext(), "Top-up failed", Toast.LENGTH_LONG);
-                    }
-                    break;
+                        case HandleCode.TopupFailed:
+                        {
+                            Toast.makeText(getContext(), "Top-up failed", Toast.LENGTH_LONG);
+                        }
+                        break;
 
-                    case HandleCode.Error_Msg:
+                        case HandleCode.Error_Msg:
                         {
                             String response=((Exception)msg.obj).toString();
                             Toast.makeText(getContext(), "An error occurred: " + response, Toast.LENGTH_LONG).show();
@@ -90,8 +91,11 @@ public class ProfileFragment extends Fragment {
                         break;
 
 
-                    default:
-                        break;
+                        default:
+                            break;
+                    }
+                } catch(Exception e) {
+
                 }
 
 

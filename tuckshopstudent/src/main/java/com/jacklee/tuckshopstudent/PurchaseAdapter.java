@@ -6,6 +6,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -105,6 +107,7 @@ public class PurchaseAdapter extends BaseAdapter {
 
             @Override
             public void afterTextChanged(Editable s) {
+
                 if (s.length() > 0) {
                     int iQuantity = Integer.parseInt(s.toString());
                     if (iQuantity > 0) {
@@ -117,6 +120,8 @@ public class PurchaseAdapter extends BaseAdapter {
                             quantity.setText(s.toString().substring(0, s.length() - 1 ));
                             quantity.setSelection(quantity.getText().length());
                             Toast.makeText(context, "The quantity you want to buy exceeds the stock limit.", Toast.LENGTH_SHORT).show();
+                            quantity.startAnimation(shakeError());
+
                         }
                     }
                 } else {
@@ -130,6 +135,13 @@ public class PurchaseAdapter extends BaseAdapter {
         });
 
         return rowView;
+    }
+
+    public TranslateAnimation shakeError() {
+        TranslateAnimation shake = new TranslateAnimation(0, 20, 0, 0);
+        shake.setDuration(500);
+        shake.setInterpolator(new CycleInterpolator(7));
+        return shake;
     }
 
 }
