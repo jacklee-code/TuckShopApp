@@ -3,44 +3,48 @@
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:orientation="horizontal"
-    android:padding="5dp"
+    android:padding="10dp"
     android:weightSum="10">
 
     <TextView
-        android:id="@+id/plistitem_foodname"
+
+        android:id="@+id/plistitem_id"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:text="Food name ABC"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:text="2" />
 
+    <TextView
+
+        android:id="@+id/plistitem_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:gravity="center_vertical"
         android:paddingLeft="5dp"
-        android:gravity="center_vertical"
-        android:layout_weight="3" />
+        android:text="Jack Lee" />
 
     <TextView
-        android:id="@+id/plistitem_foodtype"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:text="Soft Drink"
-        android:gravity="center_vertical"
-        android:layout_weight="3" />
 
-    <TextView
-        android:id="@+id/plistitem_foodprice"
+        android:id="@+id/plistitem_balance"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:text="$50.00"
+        android:layout_weight="2.5"
         android:gravity="center_vertical"
-        android:layout_weight="2" />
+        android:paddingLeft="5dp"
+        android:text="$0.00" />
 
-    <EditText
-        android:id="@+id/plistitem_quantity"
+    <Button
+
+        android:id="@+id/plistitem_topup"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:inputType="number"
-        android:layout_weight="2"
-        android:ems="10"
-        android:textAlignment="center"
-        android:textSize="14dp"
-        android:hint="Max:99"/>
+        android:layout_height="wrap_content"
+        android:layout_weight="2.5"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="TOP UP" />
+
 
 </LinearLayout>

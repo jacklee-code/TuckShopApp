@@ -2,6 +2,7 @@ package com.jacklee.tuckshopparent;
 
 public class HandleCode {
     public final static int Error_Msg = 999;
+    public final static int Test = -1;
 
     public final static int LoginSuccess = 1;
     public final static int LoginFailed = 2;

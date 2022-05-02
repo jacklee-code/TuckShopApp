@@ -345,7 +345,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginSuccess(String username) {
         String welcome = getString(R.string.welcome) + username;
-        // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 

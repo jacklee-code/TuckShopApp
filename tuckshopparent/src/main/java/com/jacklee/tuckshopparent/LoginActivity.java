@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 // Open New Activity
                                 //TODO: create main activity
-                                Intent i = new Intent(LoginActivity.this, null);
+                                Intent i = new Intent(LoginActivity.this, MainActivity.class);
                                 GlobalVariables.account = account;
                                 startActivity(i);
                         }
@@ -257,7 +257,7 @@ public class LoginActivity extends AppCompatActivity {
                     hm.put("fullname", ac.Fullname);
 
                     //TODO: change in every version
-                    hm.put("typeid", "1");
+                    hm.put("typeid", "2");
 
                     HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
 
@@ -337,7 +337,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginSuccess(String username) {
         String welcome = getString(R.string.welcome) + username;
-        // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 

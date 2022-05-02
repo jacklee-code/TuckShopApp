@@ -7,8 +7,8 @@
     $amount = $_POST["amount"];
 
     try {
-        $sql_query = "SELECT t.TypeName AS AccountType FROM Accounts AS a, AccountType AS t WHERE a.Username=:username AND a.Password=:password AND a.TypeId=t.TypeId;";
-        $statement = $db->prepare($sql_query);
+        $sql = "SELECT t.TypeName AS AccountType FROM Accounts AS a, AccountType AS t WHERE a.Username=:username AND a.Password=:password AND a.TypeId=t.TypeId;";
+        $statement = $db->prepare($sql);
         $statement->bindParam(":username", $username);
         $statement->bindParam(":password", $password);
         $statement->execute();
@@ -18,8 +18,8 @@
 
         //Student Top Up
         if ($type == "student") {
-            $sql_query = "UPDATE Accounts SET Balance = Balance + :amount WHERE Username=:username AND Password = :password AND UserId = :userId;";
-            $statement = $db->prepare($sql_query);
+            $sql = "UPDATE Accounts SET Balance = Balance + :amount WHERE Username=:username AND Password = :password AND UserId = :userId;";
+            $statement = $db->prepare($sql);
             $statement->bindParam(":amount", $amount);
             $statement->bindParam(":username", $username);
             $statement->bindParam(":password", $password);

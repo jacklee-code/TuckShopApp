@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_purchase"
-        android:name="com.jacklee.tuckshopstudent.PurchaseFragment"
+        android:name="com.jacklee.tuckshopparent.BanFragment"
         android:label="@string/title_purchase"
-        tools:layout="@layout/fragment_purchase" />
+        tools:layout="@layout/fragment_ban" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.jacklee.tuckshopstudent.ProfileFragment"
+        android:name="com.jacklee.tuckshopparent.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/navigation_records"
-        android:name="com.jacklee.tuckshopstudent.RecordsFragment"
+        android:name="com.jacklee.tuckshopparent.RecordsFragment"
         android:label="@string/title_history"
         tools:layout="@layout/fragment_records" />
 </navigation>

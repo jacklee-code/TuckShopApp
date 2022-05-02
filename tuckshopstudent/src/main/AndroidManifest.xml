@@ -11,11 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TuckShopStudent">
+
         <activity
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"/>
+
         <activity
             android:name=".LoginActivity"
             android:exported="true"

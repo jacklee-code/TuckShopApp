@@ -1,26 +1,17 @@
-package com.jacklee.tuckshopstudent;
+package com.jacklee.tuckshopparent;
 
 import android.content.Context;
-import android.graphics.SumPathEffect;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RecordsAdapter extends BaseAdapter {
 
