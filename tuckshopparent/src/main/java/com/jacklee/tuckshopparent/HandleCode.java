@@ -1,0 +1,27 @@
+package com.jacklee.tuckshopparent;
+
+public class HandleCode {
+    public final static int Error_Msg = 999;
+
+    public final static int LoginSuccess = 1;
+    public final static int LoginFailed = 2;
+
+    public final static int RegisterSuccess = 3;
+    public final static int RegisterFailed = 4;
+
+    public final static int ProfileSuccess = 5;
+    public final static int ProfileFailed = 6;
+
+    public final static int TopupSuccess = 7;
+    public final static int TopupFailed = 8;
+
+    public final static int GetFoodListSuccess = 9;
+    public final static int GetFoodListFailed = 10;
+
+    public final static int GetBuyRecordsSuccess = 11;
+    public final static int GetBuyRecordsFailed = 12;
+
+    public final static int PurchaseSuccess = 11;
+    public final static int PurchaseFailed = 12;
+
+}

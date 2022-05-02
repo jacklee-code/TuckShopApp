@@ -1,4 +1,4 @@
-package com.jack.tuckshopparent;
+package com.jacklee.tuckshopparent;
 
 import org.junit.Test;
 

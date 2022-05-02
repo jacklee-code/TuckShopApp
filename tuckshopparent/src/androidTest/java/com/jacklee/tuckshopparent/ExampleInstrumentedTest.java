@@ -1,4 +1,4 @@
-package com.jack.tuckshopparent;
+package com.jacklee.tuckshopparent;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.jack.tuckshopparent", appContext.getPackageName());
+        assertEquals("com.jacklee.tuckshopparent", appContext.getPackageName());
     }
 }
