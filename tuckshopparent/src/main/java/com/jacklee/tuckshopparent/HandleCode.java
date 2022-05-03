@@ -35,6 +35,9 @@ public class HandleCode {
     public final static int UnlinkSuccess = 19;
     public final static int UnlinkFailed = 20;
 
-    public final static int BanFailed = 21;
+    public final static int DoBan = 21;
+    public final static int DoUnban = 22;
+    public final static int BanUnbanSuccess = 23;
+    public final static int BanUnbanFailed = 24;
 
 }

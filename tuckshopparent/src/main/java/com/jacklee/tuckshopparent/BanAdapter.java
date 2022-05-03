@@ -1,6 +1,8 @@
 package com.jacklee.tuckshopparent;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,18 +22,19 @@ public class BanAdapter extends BaseAdapter {
 
     private Context context;
     private List<Food> foodList;
-    private HashMap<Integer, Integer> shoppingCart;
     private Double[] priceTable;
 
+    Handler handler;
+
     LayoutInflater mInflater;
-    public BanAdapter(Context context, List<Food> foodList){
+    public BanAdapter(Context context, List<Food> foodList, Handler handler){
         this.context = context;
         this.foodList = foodList;
-        shoppingCart = new HashMap<>();
         priceTable = new Double[foodList.size() + 1];
         for (Food food : foodList) {
             priceTable[food.FoodId] = food.Price;
         }
+        this.handler = handler;
     }
 
     @Override
@@ -49,13 +52,6 @@ public class BanAdapter extends BaseAdapter {
         return arg0;
     }
 
-    public double getTotalAmount() {
-        double sum = 0;
-        for (Map.Entry<Integer, Integer> entry: shoppingCart.entrySet()) {
-            sum += entry.getValue() * priceTable[entry.getKey()];
-        }
-        return sum;
-    }
 
 
     @Override
@@ -81,7 +77,10 @@ public class BanAdapter extends BaseAdapter {
         ban.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                // do later
+                Message msg = handler.obtainMessage();
+                msg.what = isChecked ? HandleCode.DoBan : HandleCode.DoUnban;
+                msg.obj = String.valueOf(foodList.get(position).FoodId);
+                handler.sendMessage(msg);
             }
         });
 

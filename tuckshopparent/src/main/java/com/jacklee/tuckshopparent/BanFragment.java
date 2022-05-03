@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 
 public class BanFragment extends Fragment {
 
@@ -50,7 +51,7 @@ public class BanFragment extends Fragment {
                             // Create ListView
                             listView = binding.banListview;
                             listView.setItemsCanFocus(true);
-                            banAdapter = new BanAdapter(getActivity(), foodList);
+                            banAdapter = new BanAdapter(getActivity(), foodList, mHandler);
                             listView.setAdapter(banAdapter);
 
                             binding.banProgressBar.setVisibility(View.INVISIBLE);
@@ -78,7 +79,7 @@ public class BanFragment extends Fragment {
                                 namelist[i] = GlobalVariables.profiles.get(i).Username;
                             }
 
-                            ArrayAdapter<String> adp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, namelist);
+                            ArrayAdapter<String> adp = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, namelist);
                             adp.setDropDownViewResource(R.layout.spinner_item);
                             binding.banStudents.setAdapter(adp);
 
@@ -97,12 +98,13 @@ public class BanFragment extends Fragment {
                                 }
                             });
 
+
                             if (GlobalVariables.profiles.size() > 0)
                                 if (GlobalVariables.profiles.size() > selectedIndex)
-                                    getFoodList(GlobalVariables.profiles.get(selectedIndex).UserId);
+                                    binding.banStudents.setSelection(selectedIndex);
                                 else {
-                                    getFoodList(GlobalVariables.profiles.get(0).UserId);
                                     selectedIndex = 0;
+                                    binding.banStudents.setSelection(0);
                                 }
                             else {
                                 binding.banProgressBar.setVisibility(View.INVISIBLE);
@@ -130,6 +132,32 @@ public class BanFragment extends Fragment {
                         }
                         break;
 
+                        case HandleCode.DoBan:
+                        {
+                            doBanUnban(true, (String) msg.obj);
+                        }
+                        break;
+
+                        case HandleCode.DoUnban:
+                        {
+                            doBanUnban(false, (String) msg.obj);
+                        }
+                        break;
+
+                        case HandleCode.BanUnbanSuccess:
+                        {
+                            getStudentList();
+                        }
+                        break;
+
+                        case HandleCode.BanUnbanFailed:
+                        {
+                            Toast.makeText(getContext(), "Ban / Unban Failed. Please try again.", Toast.LENGTH_SHORT);
+                            binding.banProgressBar.setVisibility(View.INVISIBLE);
+                            binding.banLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+
 
                         default:
                             break;
@@ -145,6 +173,47 @@ public class BanFragment extends Fragment {
         getStudentList();
 
         return root;
+    }
+
+    private void doBanUnban(boolean isBan, String foodid) {
+        binding.banProgressBar.setVisibility(View.VISIBLE);
+        binding.banLoading.setVisibility(View.VISIBLE);
+
+        Map<String, String> hm = new HashMap<>();
+        hm.put("username", GlobalVariables.account.Username);
+        hm.put("password", GlobalVariables.account.getPassword());
+        hm.put("targetid", GlobalVariables.profiles.get(selectedIndex).UserId);
+        hm.put("foodid", foodid);
+
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/" + (isBan ? "" : "un") + "ban.php", hm, new HttpCallbackListener() {
+
+            @Override
+            public void onFinish(String response) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.BanUnbanSuccess;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.Error_Msg;
+                msg.obj = e;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnForbidden() {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.BanUnbanFailed;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnBadRequest() {
+
+            }
+        });
     }
 
     private void getStudentList() {
