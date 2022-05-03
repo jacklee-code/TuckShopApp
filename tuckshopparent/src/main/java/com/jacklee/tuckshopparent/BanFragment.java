@@ -30,6 +30,8 @@ public class BanFragment extends Fragment {
     private BanAdapter banAdapter;
     private Handler mHandler;
 
+    private int selectedIndex = 0;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentBanBinding.inflate(inflater, container, false);
@@ -43,29 +45,21 @@ public class BanFragment extends Fragment {
                         {
                             foodList = Arrays.asList(new Gson().fromJson((String) msg.obj, Food[].class));
                             // Create ListView
-                            listView = binding.purchaseListview;
+                            listView = binding.banListview;
                             listView.setItemsCanFocus(true);
-                            banAdapter = new BanAdapter(getActivity(), foodList, binding.purchaseTotalamount);
+                            banAdapter = new BanAdapter(getActivity(), foodList);
                             listView.setAdapter(banAdapter);
 
-                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                            binding.banProgressBar.setVisibility(View.INVISIBLE);
+                            binding.banLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 
                         case HandleCode.GetFoodListFailed:
                         {
                             Toast.makeText(getContext(), "Failed to get food list, please try again.", Toast.LENGTH_SHORT);
-                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
-                        }
-                        break;
-
-                        case HandleCode.PurchaseSuccess:
-                        {
-                            Toast.makeText(getContext(), "The purchase was successful.", Toast.LENGTH_SHORT).show();
-                            RefreshUserProfile();
-                            RefreshFoodList();
+                            binding.banProgressBar.setVisibility(View.INVISIBLE);
+                            binding.banLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 
@@ -73,25 +67,18 @@ public class BanFragment extends Fragment {
                         case HandleCode.ProfileSuccess:
                         {
                             GlobalVariables.profiles = Arrays.asList(new Gson().fromJson((String) msg.obj, StudentProfile[].class));
-                            //binding.purchaseBalance.setText("$ " + GlobalVariables.profile.Balance);
-                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
+
+                            binding.banProgressBar.setVisibility(View.INVISIBLE);
+                            binding.banLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 
                         case HandleCode.ProfileFailed:
                         {
                             Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_SHORT).show();
-                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
-                        }
-                        break;
-
-                        case HandleCode.PurchaseFailed:
-                        {
-                            Toast.makeText(getContext(), "The purchase was Failed.", Toast.LENGTH_SHORT).show();
-                            binding.purchaseProgressBar.setVisibility(View.INVISIBLE);
-                            binding.purchaseLoading.setVisibility(View.INVISIBLE);
+                            binding.banNolink.setVisibility(View.VISIBLE);
+                            binding.banProgressBar.setVisibility(View.INVISIBLE);
+                            binding.banLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 
@@ -115,19 +102,14 @@ public class BanFragment extends Fragment {
             };
         };
 
-
-        // Get food list  (HTTP method)
-        RefreshFoodList();
-
-        // Get Balance
-        RefreshUserProfile();
+        getStudentList();
 
         return root;
     }
 
-    private void RefreshUserProfile() {
-        binding.purchaseProgressBar.setVisibility(View.VISIBLE);
-        binding.purchaseLoading.setVisibility(View.VISIBLE);
+    private void getStudentList() {
+        binding.banProgressBar.setVisibility(View.VISIBLE);
+        binding.banLoading.setVisibility(View.VISIBLE);
         Map<String, String> hm = new HashMap<>();
         hm.put("username", GlobalVariables.account.Username);
         hm.put("password", GlobalVariables.account.getPassword());
@@ -164,13 +146,12 @@ public class BanFragment extends Fragment {
         });
     }
 
-    private void RefreshFoodList() {
-        binding.purchaseProgressBar.setVisibility(View.VISIBLE);
-        binding.purchaseLoading.setVisibility(View.VISIBLE);
+    private void getFoodList(String student_id) {
+        binding.banProgressBar.setVisibility(View.VISIBLE);
+        binding.banLoading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> hashMap = new HashMap<>();
-        //TODO: Change From Single ID to Multi ID in PHP
-        //hashMap.put("UserId", GlobalVariables.profile.UserId);
+        hashMap.put("UserId", student_id);
 
         HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getFoodList.php", hashMap, new HttpCallbackListener() {
             @Override
@@ -199,6 +180,7 @@ public class BanFragment extends Fragment {
             }
         });
     }
+
 
     @Override
     public void onDestroyView() {

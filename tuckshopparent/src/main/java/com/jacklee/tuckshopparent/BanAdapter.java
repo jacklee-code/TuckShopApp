@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -21,10 +22,9 @@ public class BanAdapter extends BaseAdapter {
     private List<Food> foodList;
     private HashMap<Integer, Integer> shoppingCart;
     private Double[] priceTable;
-    private TextView totalAmountView;
 
     LayoutInflater mInflater;
-    public BanAdapter(Context context, List<Food> foodList, TextView totalAmountView){
+    public BanAdapter(Context context, List<Food> foodList){
         this.context = context;
         this.foodList = foodList;
         shoppingCart = new HashMap<>();
@@ -32,7 +32,6 @@ public class BanAdapter extends BaseAdapter {
         for (Food food : foodList) {
             priceTable[food.FoodId] = food.Price;
         }
-        this.totalAmountView = totalAmountView;
     }
 
     @Override
@@ -73,11 +72,18 @@ public class BanAdapter extends BaseAdapter {
         foodtype = (TextView) rowView.findViewById(R.id.blistitem_type);
         foodprice = (TextView) rowView.findViewById(R.id.blistitem_price);
 
+        ban.setChecked(foodList.get(position).Banned);
         foodname.setTag(foodList.get(position).FoodId);
         foodname.setText(foodList.get(position).FoodName);
         foodtype.setText(foodList.get(position).FoodType);
         foodprice.setText("$" + String.format("%.2f", foodList.get(position).Price));
 
+        ban.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                // do later
+            }
+        });
 
         return rowView;
     }
