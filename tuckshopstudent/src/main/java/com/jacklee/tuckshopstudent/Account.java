@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 public class Account implements Serializable {
+    public String UserId;
     public String Fullname;
     public String Username;
     private String Password;

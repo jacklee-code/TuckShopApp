@@ -39,7 +39,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="Select student:" />
+        android:layout_marginTop="10dp"
+        android:text="Select student:"
+        android:textSize="15dp"/>
 
     <TextView
         android:id="@+id/ban_nolink"
@@ -47,6 +49,7 @@
         android:layout_height="wrap_content"
         android:text="You are not currently link to any students\nPress link with a student in Profile"
         android:visibility="invisible"
+        android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -60,7 +63,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/textView2"
         app:layout_constraintLeft_toRightOf="@id/textView2"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/textView2"
+        android:layout_marginLeft="10dp"/>
 
     <ListView
         android:id="@+id/ban_listview"

@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -44,6 +46,7 @@ public class BanFragment extends Fragment {
                         case HandleCode.GetFoodListSuccess:
                         {
                             foodList = Arrays.asList(new Gson().fromJson((String) msg.obj, Food[].class));
+
                             // Create ListView
                             listView = binding.banListview;
                             listView.setItemsCanFocus(true);
@@ -68,8 +71,45 @@ public class BanFragment extends Fragment {
                         {
                             GlobalVariables.profiles = Arrays.asList(new Gson().fromJson((String) msg.obj, StudentProfile[].class));
 
-                            binding.banProgressBar.setVisibility(View.INVISIBLE);
-                            binding.banLoading.setVisibility(View.INVISIBLE);
+                            binding.banNolink.setVisibility(GlobalVariables.profiles.size() == 0 ? View.VISIBLE : View.INVISIBLE);
+
+                            String[] namelist = new String[GlobalVariables.profiles.size()];
+                            for (int i = 0; i< GlobalVariables.profiles.size(); i++) {
+                                namelist[i] = GlobalVariables.profiles.get(i).Username;
+                            }
+
+                            ArrayAdapter<String> adp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, namelist);
+                            adp.setDropDownViewResource(R.layout.spinner_item);
+                            binding.banStudents.setAdapter(adp);
+
+
+                            binding.banStudents.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+                            {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
+                                    selectedIndex = position;
+                                    getFoodList(GlobalVariables.profiles.get(selectedIndex).UserId);
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+
+                                }
+                            });
+
+                            if (GlobalVariables.profiles.size() > 0)
+                                if (GlobalVariables.profiles.size() > selectedIndex)
+                                    getFoodList(GlobalVariables.profiles.get(selectedIndex).UserId);
+                                else {
+                                    getFoodList(GlobalVariables.profiles.get(0).UserId);
+                                    selectedIndex = 0;
+                                }
+                            else {
+                                binding.banProgressBar.setVisibility(View.INVISIBLE);
+                                binding.banLoading.setVisibility(View.INVISIBLE);
+                            }
+
+
                         }
                         break;
 
@@ -146,12 +186,12 @@ public class BanFragment extends Fragment {
         });
     }
 
-    private void getFoodList(String student_id) {
+    private void getFoodList(String studentid) {
         binding.banProgressBar.setVisibility(View.VISIBLE);
         binding.banLoading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("UserId", student_id);
+        hashMap.put("UserId", studentid);
 
         HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getFoodList.php", hashMap, new HttpCallbackListener() {
             @Override

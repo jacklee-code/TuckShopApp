@@ -15,24 +15,25 @@
             return;
         }
 
-        if ($type == "student" || $type == "teacher") {
-            $sql = "SELECT f.FoodId, f.FoodName, t.TypeName AS FoodType, f.Quantity, f.Price, s.SupplierName AS Supplier
+        //if ($type == "student" || $type == "teacher") {
+
+        $sql = "SELECT f.FoodId, f.FoodName, t.TypeName AS FoodType, f.Quantity, f.Price, s.SupplierName AS Supplier
                       FROM Foods AS f, Suppliers AS s, FoodType AS t WHERE f.TypeId = t.TypeId AND f.SupplierId = s.SupplierId;";
+        $statement = $db->prepare($sql);
+        $statement->execute();
+        $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        for ($x = 0; $x < count($results); $x++) {
+            $sql = "SELECT * FROM Banned WHERE StudentId = :userid AND FoodId = :foodid;";
             $statement = $db->prepare($sql);
+            $statement->bindParam(":userid", $userid, PDO::PARAM_INT);
+            $statement->bindParam(":foodid", $results[$x]["FoodId"], PDO::PARAM_INT);
             $statement->execute();
-            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+            $results[$x]["Banned"] = $statement->rowCount() > 0;
+        }
+        $json = json_encode($results, JSON_NUMERIC_CHECK);
 
-            for ($x = 0; $x < count($results); $x++) {
-                $sql = "SELECT * FROM Banned WHERE StudentId = :userid AND FoodId = :foodid;";
-                $statement = $db->prepare($sql);
-                $statement->bindParam(":userid", $userid, PDO::PARAM_INT);
-                $statement->bindParam(":foodid", $results[$x]["FoodId"], PDO::PARAM_INT);
-                $statement->execute();
-                $results[$x]["Banned"] = $statement->rowCount() > 0;
-            }
-            $json = json_encode($results, JSON_NUMERIC_CHECK);
-
-        } else if ($type == "parent") {
+        /*} else if ($type == "parent") {
 
             $sql = "SELECT f.FoodId, f.FoodName, t.TypeName AS FoodType, f.Quantity, f.Price, s.SupplierName AS Supplier
                       FROM Foods AS f, Suppliers AS s, FoodType AS t WHERE f.TypeId = t.TypeId AND f.SupplierId = s.SupplierId;";
@@ -59,12 +60,11 @@
                     $statement->execute();
                     $results[$x]["Banned"] = $statement->rowCount() > 0;
                 }
-                $results["StudentId"] = $studentsId[$i]["StudentId"];
-                $jsonArray[] = $results;
+                $jsonArray[$studentsId[$i]["StudentId"]] = $results;
             }
 
             $json = json_encode($jsonArray, JSON_NUMERIC_CHECK);
-        }
+        }*/
 
         echo $json;
     }

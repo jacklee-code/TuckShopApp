@@ -32,8 +32,6 @@ public class ProfileFragment extends Fragment {
 
     private Handler mHandler;
 
-    final String hostname = "https://iit3008-11379925.000webhostapp.com";
-
     private FragmentProfileBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -130,7 +128,7 @@ public class ProfileFragment extends Fragment {
                             binding.profileLoading.setVisibility(View.VISIBLE);
                             binding.profileLoading.setVisibility(View.VISIBLE);
 
-                            HttpUtil.sendHTTPRequest(hostname + "/topup.php", topupparams, new HttpCallbackListener() {
+                            HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/topup.php", topupparams, new HttpCallbackListener() {
                                 @Override
                                 public void onFinish(String response) {
                                     Message msg=mHandler.obtainMessage();
@@ -180,7 +178,7 @@ public class ProfileFragment extends Fragment {
         hm.put("username", GlobalVariables.account.Username);
         hm.put("password", GlobalVariables.account.getPassword());
 
-        HttpUtil.sendHTTPRequest(hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
 
             @Override
             public void onFinish(String response) {

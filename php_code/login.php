@@ -4,7 +4,7 @@
     $username = $_POST["username"];
     $password = $_POST["password"];
 
-    $sql_query = "SELECT Username, Password, Fullname FROM Accounts where Username=:username AND Password = :password;";
+    $sql_query = "SELECT UserId, Username, Password, Fullname FROM Accounts where Username=:username AND Password = :password;";
     $statement = $db->prepare($sql_query);
     $statement->bindParam(":username", $username);
     $statement->bindParam(":password", $password);
