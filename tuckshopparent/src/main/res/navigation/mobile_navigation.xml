@@ -6,9 +6,9 @@
     app:startDestination="@+id/navigation_profile">
 
     <fragment
-        android:id="@+id/navigation_purchase"
+        android:id="@+id/navigation_management"
         android:name="com.jacklee.tuckshopparent.BanFragment"
-        android:label="@string/title_purchase"
+        android:label="Management"
         tools:layout="@layout/fragment_ban" />
 
     <fragment
