@@ -22,7 +22,7 @@
         }
     }
     catch (Exception $e) {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        echo 'Caught exception: ',  $e->getTraceAsString(), "\n";
         http_response_code(403);
     }
 
