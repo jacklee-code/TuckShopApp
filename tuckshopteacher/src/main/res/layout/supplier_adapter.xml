@@ -9,7 +9,7 @@
 
     <TextView
 
-        android:id="@+id/plistitem_id"
+        android:id="@+id/slistitem_id"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -19,37 +19,27 @@
 
     <TextView
 
-        android:id="@+id/plistitem_name"
+        android:id="@+id/slistitem_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4.5"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:text="EdUHK Limited" />
+
+    <TextView
+
+        android:id="@+id/slistitem_income"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
-        android:text="Jack Lee" />
-
-    <TextView
-
-        android:id="@+id/plistitem_balance"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:gravity="center_vertical"
-        android:paddingLeft="5dp"
         android:text="$0.00" />
-
-    <Button
-
-        android:id="@+id/plistitem_topup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2.5"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text="TOP UP" />
 
 
     <ImageButton
-        android:id="@+id/plistitem_unlink"
+        android:id="@+id/slistitem_delete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"

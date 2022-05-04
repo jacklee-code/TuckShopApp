@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/navigation_management"
         android:name="com.jacklee.tuckshopparent.BanFragment"
-        android:label="Management"
+        android:label="Ban/Unban Foods"
         tools:layout="@layout/fragment_ban" />
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.jacklee.tuckshopparent.ProfileFragment"
-        android:label="@string/title_profile"
+        android:label="Topup &#38; Link With Student"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/navigation_records"
         android:name="com.jacklee.tuckshopparent.RecordsFragment"
-        android:label="@string/title_history"
+        android:label="Purchase History"
         tools:layout="@layout/fragment_records" />
 </navigation>

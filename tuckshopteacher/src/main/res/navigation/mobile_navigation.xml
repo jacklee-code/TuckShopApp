@@ -3,23 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_profile"
-    app:startDestination="@+id/navigation_profile">
+    app:startDestination="@+id/navigation_supplier">
 
     <fragment
         android:id="@+id/navigation_management"
         android:name="com.jacklee.tuckshopteacher.BanFragment"
-        android:label="Management"
+        android:label="Product Management"
         tools:layout="@layout/fragment_ban" />
 
     <fragment
-        android:id="@+id/navigation_profile"
-        android:name="com.jacklee.tuckshopteacher.ProfileFragment"
-        android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        android:id="@+id/navigation_supplier"
+        android:name="com.jacklee.tuckshopteacher.SupplierFragment"
+        android:label="Supplier List"
+        tools:layout="@layout/fragment_supplier" />
 
     <fragment
         android:id="@+id/navigation_records"
         android:name="com.jacklee.tuckshopteacher.RecordsFragment"
-        android:label="@string/title_history"
+        android:label="Purchase History of Students"
         tools:layout="@layout/fragment_records" />
+
+    <fragment
+    android:id="@+id/navigation_report"
+    android:name="com.jacklee.tuckshopteacher.ReportFragment"
+    android:label="Reports of Product"
+    tools:layout="@layout/fragment_report" />
 </navigation>

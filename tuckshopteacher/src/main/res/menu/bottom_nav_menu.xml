@@ -8,9 +8,14 @@
         android:title="Management" />
 
     <item
-        android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_baseline_account_circle_24"
-        android:title="@string/title_profile" />
+        android:id="@+id/navigation_supplier"
+        android:icon="@drawable/ic_baseline_store_24"
+        android:title="Suppliers" />
+
+    <item
+        android:id="@+id/navigation_report"
+        android:icon="@drawable/ic_baseline_receipt_24"
+        android:title="Reports" />
 
     <item
         android:id="@+id/navigation_records"

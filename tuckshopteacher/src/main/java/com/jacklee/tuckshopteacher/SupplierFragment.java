@@ -21,26 +21,26 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
-import com.jacklee.tuckshopteacher.databinding.FragmentProfileBinding;
+import com.jacklee.tuckshopteacher.databinding.FragmentSupplierBinding;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class ProfileFragment extends Fragment {
+public class SupplierFragment extends Fragment {
 
     private Handler mHandler;
 
     private ListView listView;
-    private ProfileAdapter adapter;
+    private SupplierAdapter adapter;
     private ProgressBar link_progressBar;
 
-    private FragmentProfileBinding binding;
+    private FragmentSupplierBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentProfileBinding.inflate(inflater, container, false);
+        binding = FragmentSupplierBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
 
@@ -65,7 +65,7 @@ public class ProfileFragment extends Fragment {
 
                             listView = binding.profileListview;
                             listView.setItemsCanFocus(true);
-                            adapter = new ProfileAdapter(getActivity(), GlobalVariables.profiles, mHandler);
+                            adapter = new SupplierAdapter(getActivity(), GlobalVariables.profiles, mHandler);
                             listView.setAdapter(adapter);
 
                             binding.profileProgressBar.setVisibility(View.INVISIBLE);
