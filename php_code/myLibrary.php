@@ -70,4 +70,19 @@
         return $results["id"];
     }
 
+    function isLinked($db, $parentid, $studentid) {
+        $sql = "SELECT * FROM Linkage WHERE ParentId = :userid AND StudentId = :targetid;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(":userid", $parentid, PDO::PARAM_INT);
+        $stmt->bindParam(":targetid", $studentid, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return ($stmt->rowCount() > 0);
+    }
+
+    function callForbidden() {
+        http_response_code(403);
+        exit();
+    }
+
 ?>

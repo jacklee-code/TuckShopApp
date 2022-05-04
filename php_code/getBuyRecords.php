@@ -1,13 +1,29 @@
 <?php
 
-    include("connectDB.php");
+    include "connectDB.php";
+    include "myLibrary.php";
 
-    $userId = $_POST["UserId"];
+    if (!isset($_POST["username"]) || !isset($_POST["password"]))
+        callForbidden();
+
+    $userId = loginAndGetUserId($db, $_POST["username"], $_POST["password"]);
+    $targetId = isset($_POST["targetid"]) ? $_POST["targetid"] : "";
 
     try {
+        $type = getUserTypeStringLower($db, $userId);
+        if (strlen($userId) < 1 || strlen($type) < 1)
+            callForbidden();
+
+        if ($type == "student")
+            $targetId = $userId;
+        else if ($type == "parent")
+            if (!isLinked($db, $userId, $targetId))
+                callForbidden();
+
+
         $sql = "SELECT RecordId, StudentId, Time AS DateTime FROM BuyRecords WHERE StudentId = :userId ;";
         $statement = $db->prepare($sql);
-        $statement->bindParam(":userId", $userId);
+        $statement->bindParam(":userId", $targetId);
         $statement->execute();
         $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 

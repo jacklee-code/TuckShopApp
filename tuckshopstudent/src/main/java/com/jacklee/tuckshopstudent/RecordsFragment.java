@@ -108,7 +108,8 @@ public class RecordsFragment extends Fragment {
         binding.recordsProgressBar.setVisibility(View.VISIBLE);
 
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("UserId", GlobalVariables.profile.UserId);
+        hashMap.put("username", GlobalVariables.account.Username);
+        hashMap.put("password", GlobalVariables.account.getPassword());
 
         HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getBuyRecords.php", hashMap, new HttpCallbackListener() {
             @Override
