@@ -22,7 +22,7 @@ public class PurchaseAdapter extends BaseAdapter {
     private Context context;
     private List<Food> foodList;
     private HashMap<Integer, Integer> shoppingCart;
-    private Double[] priceTable;
+    private HashMap<Integer, Double> priceTable;
     private TextView totalAmountView;
 
     LayoutInflater mInflater;
@@ -30,10 +30,10 @@ public class PurchaseAdapter extends BaseAdapter {
         this.context = context;
         this.foodList = foodList;
         shoppingCart = new HashMap<>();
-        priceTable = new Double[foodList.size() + 1];
-        for (Food food : foodList) {
-            priceTable[food.FoodId] = food.Price;
-        }
+        priceTable = new HashMap<>();
+        for (Food food : foodList)
+            priceTable.put(food.FoodId, food.Price);
+
         this.totalAmountView = totalAmountView;
     }
 
@@ -55,7 +55,7 @@ public class PurchaseAdapter extends BaseAdapter {
     public double getTotalAmount() {
         double sum = 0;
         for (Map.Entry<Integer, Integer> entry: shoppingCart.entrySet()) {
-            sum += entry.getValue() * priceTable[entry.getKey()];
+            sum += entry.getValue() * priceTable.get(entry.getKey());
         }
         return sum;
     }

@@ -22,7 +22,6 @@ public class BanAdapter extends BaseAdapter {
 
     private Context context;
     private List<Food> foodList;
-    private Double[] priceTable;
 
     Handler handler;
 
@@ -30,10 +29,6 @@ public class BanAdapter extends BaseAdapter {
     public BanAdapter(Context context, List<Food> foodList, Handler handler){
         this.context = context;
         this.foodList = foodList;
-        priceTable = new Double[foodList.size() + 1];
-        for (Food food : foodList) {
-            priceTable[food.FoodId] = food.Price;
-        }
         this.handler = handler;
     }
 
