@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,27 +70,6 @@ public class SupplierFragment extends Fragment {
                         }
                         break;
 
-                        case HandleCode.DoTopUp:
-                        {
-
-                        }
-                        break;
-
-                        case HandleCode.TopupSuccess:
-                        {
-                            Toast.makeText(getContext(), "Top-up successful", Toast.LENGTH_SHORT).show();
-                            getSuppliersInfo();
-                        }
-                        break;
-
-                        case HandleCode.TopupFailed:
-                        {
-                            Toast.makeText(getContext(), "Top-up failed", Toast.LENGTH_SHORT).show();
-                            binding.supplierProgressBar.setVisibility(View.INVISIBLE);
-                            binding.supplierLoading.setVisibility(View.INVISIBLE);
-                        }
-                        break;
-
                         case HandleCode.Test:
                             Toast.makeText(getContext(), "Test Success", Toast.LENGTH_SHORT).show();
                             break;
@@ -101,42 +82,19 @@ public class SupplierFragment extends Fragment {
                         }
                         break;
 
-                        case HandleCode.LinkFailed:
-                        {
-                            new_progressBar.setVisibility(View.INVISIBLE);
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-                            alert.setTitle("Link Failed");
-                            alert.setMessage("\nStudent username/password may be incorrect. \nPlease try again.\n");
-                            alert.setPositiveButton("OK", null);
-                            alert.show();
-                        }
-                        break;
-
-                        case HandleCode.LinkRepeated:
-                        {
-                            Log.e("mytest", "repeated");
-                            new_progressBar.setVisibility(View.INVISIBLE);
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-                            alert.setTitle("Link Failed");
-                            alert.setMessage("The student has been linked.");
-                            alert.setPositiveButton("OK", null);
-                            alert.show();
-                        }
-                        break;
-
-                        case HandleCode.DoUnlink:
+                        case HandleCode.DoRemoveSupplier:
                         {
                             doRemoveSupplier((String) msg.obj);
                         }
                         break;
 
-                        case HandleCode.LinkSuccess:
+                        case HandleCode.AddSupplierSuccess:
                         {
                             Dialog dialog = (Dialog) msg.obj;
                             dialog.dismiss();
                             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-                            alert.setTitle("Congratulations");
-                            alert.setMessage("Account successfully linked");
+                            alert.setTitle("Added");
+                            alert.setMessage("A new supplier profile has been added to the database.");
                             alert.setPositiveButton("OK", null);
                             alert.show();
 
@@ -144,16 +102,27 @@ public class SupplierFragment extends Fragment {
                         }
                         break;
 
-                        case HandleCode.UnlinkSuccess:
+                        case HandleCode.AddSupplierFailed:
                         {
-                            Toast.makeText(getContext(), "Unlink Successful", Toast.LENGTH_SHORT).show();
+                            new_progressBar.setVisibility(View.INVISIBLE);
+                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                            alert.setTitle("Failed");
+                            alert.setMessage("\nFailed to add supplier.\nPlease try again.\n");
+                            alert.setPositiveButton("OK", null);
+                            alert.show();
+                        }
+                        break;
+
+                        case HandleCode.RemoveSupplierSuccess:
+                        {
+                            Toast.makeText(getContext(), "Remove Supplier Successful", Toast.LENGTH_SHORT).show();
                             getSuppliersInfo();
                         }
                         break;
 
-                        case HandleCode.UnlinkFailed:
+                        case HandleCode.RemoveSupplierFailed:
                         {
-                            Toast.makeText(getContext(), "Unlink Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Remove Supplier Failed", Toast.LENGTH_SHORT).show();
                         }
                         break;
 
@@ -195,7 +164,7 @@ public class SupplierFragment extends Fragment {
             @Override
             public void onFinish(String response) {
                 Message msg=mHandler.obtainMessage();
-                msg.what = HandleCode.UnlinkSuccess;
+                msg.what = HandleCode.RemoveSupplierSuccess;
                 mHandler.sendMessage(msg);
             }
 
@@ -210,7 +179,7 @@ public class SupplierFragment extends Fragment {
             @Override
             public void OnForbidden() {
                 Message msg=mHandler.obtainMessage();
-                msg.what = HandleCode.UnlinkFailed;
+                msg.what = HandleCode.RemoveSupplierFailed;
                 mHandler.sendMessage(msg);
             }
 
@@ -223,26 +192,43 @@ public class SupplierFragment extends Fragment {
     }
 
     private void showSupplierAddDialog() {
-        View link_view;
+        View supplier_add_view;
 
         EditText supplier_name, supplier_description;
         Button supplier_add, supplier_cancel;
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        link_view = inflater.inflate(R.layout.dialog_newsupplier,null);
+        supplier_add_view = inflater.inflate(R.layout.dialog_newsupplier,null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add new supplier");
         builder.setCancelable(false);
-        builder.setView(link_view);
+        builder.setView(supplier_add_view);
         Dialog dialog = builder.create();
         dialog.show();
 
-        supplier_name = (EditText) link_view.findViewById(R.id.dialog_name);
-        supplier_description = (EditText) link_view.findViewById(R.id.dialog_description);
-        supplier_add = (Button) link_view.findViewById(R.id.dialog_add);
-        supplier_cancel = (Button) link_view.findViewById(R.id.dialog_cancel);
-        new_progressBar = (ProgressBar) link_view.findViewById(R.id.dialog_progressBar);
+        supplier_name = (EditText) supplier_add_view.findViewById(R.id.dialog_name);
+        supplier_description = (EditText) supplier_add_view.findViewById(R.id.dialog_description);
+        supplier_add = (Button) supplier_add_view.findViewById(R.id.dialog_add);
+        supplier_cancel = (Button) supplier_add_view.findViewById(R.id.dialog_cancel);
+        new_progressBar = (ProgressBar) supplier_add_view.findViewById(R.id.dialog_progressBar);
+
+        supplier_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                supplier_add.setEnabled(supplier_name.length() > 0);
+            }
+        });
 
         View.OnClickListener link_clickListener = new View.OnClickListener() {
 
@@ -258,15 +244,15 @@ public class SupplierFragment extends Fragment {
                     Map<String, String> hm = new HashMap<>();
                     hm.put("username", GlobalVariables.account.Username);
                     hm.put("password", GlobalVariables.account.getPassword());
-                    hm.put("suppliername", supplier_name.getText().toString());
-                    hm.put("supplierdescription", supplier_description.getText().toString());
+                    hm.put("name", supplier_name.getText().toString());
+                    hm.put("description", supplier_description.getText().toString().length() > 0 ? supplier_description.getText().toString() : "");
 
                     HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
 
                         @Override
                         public void onFinish(String response) {
                             Message msg=mHandler.obtainMessage();
-                            msg.what = HandleCode.LinkSuccess;
+                            msg.what = HandleCode.AddSupplierSuccess;
                             msg.obj = dialog;
                             mHandler.sendMessage(msg);
                         }
@@ -282,17 +268,14 @@ public class SupplierFragment extends Fragment {
                         @Override
                         public void OnForbidden() {
                             Message msg=mHandler.obtainMessage();
-                            msg.what = HandleCode.LinkFailed;
+                            msg.what = HandleCode.AddSupplierFailed;
                             msg.obj = dialog;
                             mHandler.sendMessage(msg);
                         }
 
                         @Override
                         public void OnBadRequest() {
-                            Message msg=mHandler.obtainMessage();
-                            msg.what = HandleCode.LinkRepeated;
-                            msg.obj = dialog;
-                            mHandler.sendMessage(msg);
+
                         }
                     });
                 }

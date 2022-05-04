@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -78,7 +77,7 @@ public class SupplierAdapter extends BaseAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Message msg = handler.obtainMessage();
-                        msg.what = HandleCode.DoUnlink;
+                        msg.what = HandleCode.DoRemoveSupplier;
                         msg.obj = supplierList.get(position).Id;
                         handler.sendMessage(msg);
                     }
