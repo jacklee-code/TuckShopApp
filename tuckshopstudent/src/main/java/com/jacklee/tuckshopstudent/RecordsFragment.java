@@ -67,7 +67,9 @@ public class RecordsFragment extends Fragment {
 
                         case HandleCode.GetBuyRecordsFailed:
                         {
-
+                            Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_SHORT).show();
+                            binding.recordsProgressBar.setVisibility(View.INVISIBLE);
+                            binding.recordsLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 

@@ -114,17 +114,8 @@ public class RecordsFragment extends Fragment {
                         break;
 
                         case HandleCode.ProfileFailed:
-                        {
-                            Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_SHORT).show();
-                            binding.recordsNolink.setVisibility(View.VISIBLE);
-                            binding.recordsProgressBar.setVisibility(View.INVISIBLE);
-                            binding.recordsLoading.setVisibility(View.INVISIBLE);
-                        }
-                        break;
-
-                        case HandleCode.GetBuyRecordsFailed:
-                        {
-
+                        case HandleCode.GetBuyRecordsFailed: {
+                            fetchDataErrorToast();
                         }
                         break;
 
@@ -151,6 +142,13 @@ public class RecordsFragment extends Fragment {
         getStudentList();
 
         return root;
+    }
+
+    private void fetchDataErrorToast() {
+        Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_SHORT).show();
+        binding.recordsNolink.setVisibility(View.VISIBLE);
+        binding.recordsProgressBar.setVisibility(View.INVISIBLE);
+        binding.recordsLoading.setVisibility(View.INVISIBLE);
     }
 
     @Override
