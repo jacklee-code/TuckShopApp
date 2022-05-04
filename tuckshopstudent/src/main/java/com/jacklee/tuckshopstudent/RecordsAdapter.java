@@ -26,13 +26,11 @@ public class RecordsAdapter extends BaseAdapter {
 
     private Context context;
     private List<BuyRecord> buyList;
-    private TextView totalAmountView;
 
     LayoutInflater mInflater;
     public RecordsAdapter(Context context, List<BuyRecord> buyList){
         this.context = context;
         this.buyList = buyList;
-        this.totalAmountView = totalAmountView;
     }
 
     @Override

@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,6 +31,8 @@ public class RecordsFragment extends Fragment {
     private ListView listView;
     private Handler mHandler;
     private RecordsAdapter recordsAdapter;
+
+    int selectedIndex = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +66,62 @@ public class RecordsFragment extends Fragment {
                         }
                         break;
 
+                        case HandleCode.ProfileSuccess:
+                        {
+                            GlobalVariables.profiles = Arrays.asList(new Gson().fromJson((String) msg.obj, StudentProfile[].class));
+
+                            binding.recordsNolink.setVisibility(GlobalVariables.profiles.size() == 0 ? View.VISIBLE : View.INVISIBLE);
+
+                            String[] namelist = new String[GlobalVariables.profiles.size()];
+                            for (int i = 0; i< GlobalVariables.profiles.size(); i++) {
+                                namelist[i] = GlobalVariables.profiles.get(i).Username;
+                            }
+
+                            ArrayAdapter<String> adp = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, namelist);
+                            adp.setDropDownViewResource(R.layout.spinner_item);
+                            binding.recordsStudents.setAdapter(adp);
+
+
+                            binding.recordsStudents.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+                            {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
+                                    selectedIndex = position;
+                                    getBuyRecords(GlobalVariables.profiles.get(selectedIndex).UserId);
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+
+                                }
+                            });
+
+
+                            if (GlobalVariables.profiles.size() > 0)
+                                if (GlobalVariables.profiles.size() > selectedIndex)
+                                    binding.recordsStudents.setSelection(selectedIndex);
+                                else {
+                                    selectedIndex = 0;
+                                    binding.recordsStudents.setSelection(0);
+                                }
+                            else {
+                                binding.recordsProgressBar.setVisibility(View.INVISIBLE);
+                                binding.recordsLoading.setVisibility(View.INVISIBLE);
+                            }
+
+
+                        }
+                        break;
+
+                        case HandleCode.ProfileFailed:
+                        {
+                            Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_SHORT).show();
+                            binding.recordsNolink.setVisibility(View.VISIBLE);
+                            binding.recordsProgressBar.setVisibility(View.INVISIBLE);
+                            binding.recordsLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+
                         case HandleCode.GetBuyRecordsFailed:
                         {
 
@@ -87,7 +147,8 @@ public class RecordsFragment extends Fragment {
                 }
             };
         };
-        getBuyRecords();
+
+        getStudentList();
 
         return root;
     }
@@ -139,15 +200,16 @@ public class RecordsFragment extends Fragment {
     }
 
 
-    private void getBuyRecords() {
+    private void getBuyRecords(String studentid) {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
         binding.recordsLoading.setVisibility(View.VISIBLE);
         binding.recordsProgressBar.setVisibility(View.VISIBLE);
 
         HashMap<String, String> hashMap = new HashMap<>();
-        //TODO: Change from single id to multi id
-        //hashMap.put("UserId", GlobalVariables.profile.UserId);
+        hashMap.put("username", GlobalVariables.account.Username);
+        hashMap.put("password", GlobalVariables.account.getPassword());
+        hashMap.put("targetid", studentid);
 
         HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getBuyRecords.php", hashMap, new HttpCallbackListener() {
             @Override

@@ -57,7 +57,7 @@
         android:id="@+id/ban_nolink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You are not currently link to any students\nPress link with a student in Profile"
+        android:text="You are not currently link to any students\nPlease link with a student in Profile"
         android:visibility="invisible"
         android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -11,6 +11,7 @@
             return;
         }
 
+
         $sql = "DELETE FROM Linkage WHERE StudentId = :targetid AND ParentId = :userid;";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);

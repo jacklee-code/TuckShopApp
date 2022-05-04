@@ -11,7 +11,7 @@ try {
         callForbidden();
 
     // Check Linkage
-    if (!isLinked($userid, $targetid))
+    if (!isLinked($db, $userid, $targetid))
         callForbidden();
 
     $sql = "DELETE FROM Banned WHERE StudentId = :targetid AND FoodId = :foodid;";
