@@ -65,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
                                 showLoginSuccess(account.Fullname);
 
                                 // Open New Activity
-                                //TODO: create main activity
                                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                                 GlobalVariables.account = account;
                                 startActivity(i);

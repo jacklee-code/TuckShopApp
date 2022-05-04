@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
-        loginButton = findViewById(R.id.dialog_link);
+        loginButton = findViewById(R.id.dialog_add);
         loadingProgressBar =findViewById(R.id.loading);
         registerButton = findViewById(R.id.register);
 
@@ -64,8 +64,6 @@ public class LoginActivity extends AppCompatActivity {
                                 Account account = new Gson().fromJson(response, Account.class);
                                 showLoginSuccess(account.Fullname);
 
-                                // Open New Activity
-                                //TODO: create main activity
                                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                                 GlobalVariables.account = account;
                                 startActivity(i);
@@ -254,7 +252,7 @@ public class LoginActivity extends AppCompatActivity {
                     hm.put("fullname", ac.Fullname);
 
                     //TODO: change in every version
-                    hm.put("typeid", "2");
+                    hm.put("typeid", "3");
 
                     HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
 

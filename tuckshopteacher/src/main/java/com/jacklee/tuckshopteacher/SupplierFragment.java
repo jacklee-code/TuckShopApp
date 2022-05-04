@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +23,8 @@ import com.jacklee.tuckshopteacher.databinding.FragmentSupplierBinding;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class SupplierFragment extends Fragment {
 
@@ -34,7 +32,7 @@ public class SupplierFragment extends Fragment {
 
     private ListView listView;
     private SupplierAdapter adapter;
-    private ProgressBar link_progressBar;
+    private ProgressBar new_progressBar;
 
     private FragmentSupplierBinding binding;
 
@@ -48,28 +46,25 @@ public class SupplierFragment extends Fragment {
             public void handleMessage(Message msg) {
                 try {
                     switch (msg.what) {
-                        case HandleCode.ProfileFailed:
+                        case HandleCode.GetSupplierFailed:
                         {
                             Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_SHORT).show();
-                            binding.profileProgressBar.setVisibility(View.INVISIBLE);
-                            binding.profileLoading.setVisibility(View.INVISIBLE);
+                            binding.supplierProgressBar.setVisibility(View.INVISIBLE);
+                            binding.supplierLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 
-                        case HandleCode.ProfileSuccess:
+                        case HandleCode.GetSupplierSuccess:
                         {
-                            GlobalVariables.profiles = Arrays.asList(new Gson().fromJson((String) msg.obj, StudentProfile[].class));
+                            List<Supplier> suppliers = Arrays.asList(new Gson().fromJson((String) msg.obj, Supplier[].class));
 
-                            binding.profileNolinkage.setVisibility(GlobalVariables.profiles.size() == 0 ? View.VISIBLE : View.INVISIBLE);
-
-
-                            listView = binding.profileListview;
+                            listView = binding.supplierListview;
                             listView.setItemsCanFocus(true);
-                            adapter = new SupplierAdapter(getActivity(), GlobalVariables.profiles, mHandler);
+                            adapter = new SupplierAdapter(getActivity(), suppliers, mHandler);
                             listView.setAdapter(adapter);
 
-                            binding.profileProgressBar.setVisibility(View.INVISIBLE);
-                            binding.profileLoading.setVisibility(View.INVISIBLE);
+                            binding.supplierProgressBar.setVisibility(View.INVISIBLE);
+                            binding.supplierLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 
@@ -82,15 +77,15 @@ public class SupplierFragment extends Fragment {
                         case HandleCode.TopupSuccess:
                         {
                             Toast.makeText(getContext(), "Top-up successful", Toast.LENGTH_SHORT).show();
-                            refreshUserProfile();
+                            getSuppliersInfo();
                         }
                         break;
 
                         case HandleCode.TopupFailed:
                         {
                             Toast.makeText(getContext(), "Top-up failed", Toast.LENGTH_SHORT).show();
-                            binding.profileProgressBar.setVisibility(View.INVISIBLE);
-                            binding.profileLoading.setVisibility(View.INVISIBLE);
+                            binding.supplierProgressBar.setVisibility(View.INVISIBLE);
+                            binding.supplierLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 
@@ -108,7 +103,7 @@ public class SupplierFragment extends Fragment {
 
                         case HandleCode.LinkFailed:
                         {
-                            link_progressBar.setVisibility(View.INVISIBLE);
+                            new_progressBar.setVisibility(View.INVISIBLE);
                             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                             alert.setTitle("Link Failed");
                             alert.setMessage("\nStudent username/password may be incorrect. \nPlease try again.\n");
@@ -120,7 +115,7 @@ public class SupplierFragment extends Fragment {
                         case HandleCode.LinkRepeated:
                         {
                             Log.e("mytest", "repeated");
-                            link_progressBar.setVisibility(View.INVISIBLE);
+                            new_progressBar.setVisibility(View.INVISIBLE);
                             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                             alert.setTitle("Link Failed");
                             alert.setMessage("The student has been linked.");
@@ -131,7 +126,7 @@ public class SupplierFragment extends Fragment {
 
                         case HandleCode.DoUnlink:
                         {
-                            doUnLink((String) msg.obj);
+                            doRemoveSupplier((String) msg.obj);
                         }
                         break;
 
@@ -145,14 +140,14 @@ public class SupplierFragment extends Fragment {
                             alert.setPositiveButton("OK", null);
                             alert.show();
 
-                            refreshUserProfile();
+                            getSuppliersInfo();
                         }
                         break;
 
                         case HandleCode.UnlinkSuccess:
                         {
                             Toast.makeText(getContext(), "Unlink Successful", Toast.LENGTH_SHORT).show();
-                            refreshUserProfile();
+                            getSuppliersInfo();
                         }
                         break;
 
@@ -173,29 +168,29 @@ public class SupplierFragment extends Fragment {
             };
         };
 
-        binding.profileLink.setOnClickListener(new View.OnClickListener() {
+        binding.supplierNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showLinkLoginDialog();
+                showSupplierAddDialog();
             }
         });
 
-        refreshUserProfile();
+        getSuppliersInfo();
 
 
         return root;
     }
 
-    private void doUnLink(String targetId) {
-        binding.profileProgressBar.setVisibility(View.VISIBLE);
-        binding.profileLoading.setVisibility(View.VISIBLE);
+    private void doRemoveSupplier(String supplierId) {
+        binding.supplierProgressBar.setVisibility(View.VISIBLE);
+        binding.supplierLoading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("username", GlobalVariables.account.Username);
         hashMap.put("password", GlobalVariables.account.getPassword());
-        hashMap.put("targetid", targetId);
+        hashMap.put("supplierid", supplierId);
 
-        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/unlink.php", hashMap, new HttpCallbackListener() {
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/removeSupplier.php", hashMap, new HttpCallbackListener() {
 
             @Override
             public void onFinish(String response) {
@@ -227,53 +222,27 @@ public class SupplierFragment extends Fragment {
 
     }
 
-    private void showLinkLoginDialog() {
+    private void showSupplierAddDialog() {
         View link_view;
 
-        EditText link_username, link_password;
-        Button link_link, link_cancel;
+        EditText supplier_name, supplier_description;
+        Button supplier_add, supplier_cancel;
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        link_view = inflater.inflate(R.layout.dialog_link,null);
+        link_view = inflater.inflate(R.layout.dialog_newsupplier,null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Create new link");
+        builder.setTitle("Add new supplier");
         builder.setCancelable(false);
         builder.setView(link_view);
         Dialog dialog = builder.create();
         dialog.show();
 
-        link_username = (EditText) link_view.findViewById(R.id.dialog_username);
-        link_password = (EditText) link_view.findViewById(R.id.dialog_password);
-        link_link = (Button) link_view.findViewById(R.id.dialog_link);
-        link_cancel = (Button) link_view.findViewById(R.id.dialog_cancel);
-        link_progressBar = (ProgressBar) link_view.findViewById(R.id.dialog_progressBar);
-
-        TextWatcher link_TextWatcher = new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                boolean rusernameok, rpwok = false;
-
-                rusernameok = isUserNameValid(link_username.getText().toString());
-                rpwok = isPasswordValid(link_password.getText().toString());
-
-                if (!rusernameok)
-                    link_username.setError(getString(R.string.invalid_username));
-
-                if (!rpwok)
-                    link_password.setError(getString(R.string.invalid_password));
-
-                link_link.setEnabled(rusernameok && rpwok);
-            }
-        };
+        supplier_name = (EditText) link_view.findViewById(R.id.dialog_name);
+        supplier_description = (EditText) link_view.findViewById(R.id.dialog_description);
+        supplier_add = (Button) link_view.findViewById(R.id.dialog_add);
+        supplier_cancel = (Button) link_view.findViewById(R.id.dialog_cancel);
+        new_progressBar = (ProgressBar) link_view.findViewById(R.id.dialog_progressBar);
 
         View.OnClickListener link_clickListener = new View.OnClickListener() {
 
@@ -282,19 +251,15 @@ public class SupplierFragment extends Fragment {
                 if (view.getId() == R.id.dialog_cancel)
                     dialog.dismiss();
 
-                else if (view.getId() == R.id.dialog_link) {
-                    link_progressBar.setVisibility(View.VISIBLE);
+                else if (view.getId() == R.id.dialog_add) {
+                    new_progressBar.setVisibility(View.VISIBLE);
 
-                    Account ac = new Account();
-                    ac.Username = link_username.getText().toString();
-                    ac.setPassword(link_password.getText().toString());
-
-                    String url = GlobalVariables.hostname + "/link.php";
+                    String url = GlobalVariables.hostname + "/addSupplier.php";
                     Map<String, String> hm = new HashMap<>();
                     hm.put("username", GlobalVariables.account.Username);
                     hm.put("password", GlobalVariables.account.getPassword());
-                    hm.put("linkusername", ac.Username);
-                    hm.put("linkpassword", ac.getPassword());
+                    hm.put("suppliername", supplier_name.getText().toString());
+                    hm.put("supplierdescription", supplier_description.getText().toString());
 
                     HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
 
@@ -334,67 +299,23 @@ public class SupplierFragment extends Fragment {
             }
         };
 
-        link_username.addTextChangedListener(link_TextWatcher);
-        link_password.addTextChangedListener(link_TextWatcher);
-        link_password.addTextChangedListener(link_TextWatcher);
-        link_link.setOnClickListener(link_clickListener);
-        link_cancel.setOnClickListener(link_clickListener);
+        supplier_add.setOnClickListener(link_clickListener);
+        supplier_cancel.setOnClickListener(link_clickListener);
     }
 
-    private void topUp(String targetId, String amount) {
-        binding.profileProgressBar.setVisibility(View.VISIBLE);
-        binding.profileLoading.setVisibility(View.VISIBLE);
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("username", GlobalVariables.account.Username);
-        params.put("password", GlobalVariables.account.getPassword());
-        params.put("userId", targetId);
-        params.put("amount", amount);
-
-        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/topup.php", params, new HttpCallbackListener() {
-
-            @Override
-            public void onFinish(String response) {
-                Message msg = mHandler.obtainMessage();
-                msg.what = HandleCode.TopupSuccess;
-                mHandler.sendMessage(msg);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Message msg = mHandler.obtainMessage();
-                msg.what = HandleCode.Error_Msg;
-                msg.obj = e;
-                mHandler.sendMessage(msg);
-            }
-
-            @Override
-            public void OnForbidden() {
-                Message msg = mHandler.obtainMessage();
-                msg.what = HandleCode.TopupFailed;
-                mHandler.sendMessage(msg);
-            }
-
-            @Override
-            public void OnBadRequest() {
-
-            }
-        });
-    }
-
-    private void refreshUserProfile() {
-        binding.profileProgressBar.setVisibility(View.VISIBLE);
-        binding.profileLoading.setVisibility(View.VISIBLE);
+    private void getSuppliersInfo() {
+        binding.supplierProgressBar.setVisibility(View.VISIBLE);
+        binding.supplierLoading.setVisibility(View.VISIBLE);
         Map<String, String> hm = new HashMap<>();
         hm.put("username", GlobalVariables.account.Username);
         hm.put("password", GlobalVariables.account.getPassword());
 
-        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getSuppliersInfo.php", hm, new HttpCallbackListener() {
 
             @Override
             public void onFinish(String response) {
                 Message msg=mHandler.obtainMessage();
-                msg.what = HandleCode.ProfileSuccess;
+                msg.what = HandleCode.GetSupplierSuccess;
                 msg.obj = response;
                 mHandler.sendMessage(msg);
             }
@@ -410,7 +331,7 @@ public class SupplierFragment extends Fragment {
             @Override
             public void OnForbidden() {
                 Message msg=mHandler.obtainMessage();
-                msg.what = HandleCode.ProfileFailed;
+                msg.what = HandleCode.GetSupplierFailed;
                 mHandler.sendMessage(msg);
             }
 
@@ -421,29 +342,10 @@ public class SupplierFragment extends Fragment {
         });
     }
 
-    public boolean isValidDecimal(String numberStr) {
-        return numberStr.matches("^\\d+$$") || numberStr.matches("\\d+\\.\\d+$");
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
-    private boolean isUserNameValid(String username) {
-        String regex = "^[a-zA-Z0-9]+$";
-
-        if (username == null) {
-            return false;
-        }
-
-        return Pattern.compile(regex).matcher(username).matches();
-    }
-
-
-    // A placeholder password validation check
-    private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
-    }
 }

@@ -14,7 +14,7 @@
             callForbidden();
 
         // Get Supplier Info and Total Income
-        $sql = "SELECT s.SupplierId, s.SupplierName, SUM(b.Quantity * f.Price) AS Income
+        $sql = "SELECT s.SupplierId AS Id, s.SupplierName AS Name, SUM(b.Quantity * f.Price) AS Income, s.SupplierDescription AS Description
                 FROM Suppliers AS s, Foods AS f, BuySlots AS b
                 WHERE b.FoodId = f.FoodId AND f.SupplierId = s.SupplierId 
                 GROUP BY s.SupplierId;";

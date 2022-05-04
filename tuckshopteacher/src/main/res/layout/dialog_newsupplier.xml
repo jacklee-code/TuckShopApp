@@ -13,45 +13,40 @@
 
     <EditText
 
-        android:id="@+id/dialog_username"
+        android:id="@+id/dialog_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Student's Username"
-        android:inputType="textEmailAddress"
-        android:selectAllOnFocus="true"
         android:layout_marginTop="25dp"
+        android:hint="Supplier Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
 
-        android:id="@+id/dialog_password"
+        android:id="@+id/dialog_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:hint="Student's Password"
+        android:hint="Supplier Description"
         android:imeActionLabel="@string/action_sign_in_short"
-        android:imeOptions="actionDone"
-        android:inputType="textPassword"
-        android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_username" />
+        app:layout_constraintTop_toBottomOf="@+id/dialog_name" />
 
     <Button
-        android:id="@+id/dialog_link"
+        android:id="@+id/dialog_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:enabled="false"
         android:layout_marginTop="25dp"
-        app:layout_constraintHorizontal_chainStyle="packed"
         android:layout_marginRight="35dp"
-        android:text="Link"
+        android:enabled="false"
+        android:text="Add"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/dialog_cancel"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_password" />
+        app:layout_constraintTop_toBottomOf="@+id/dialog_description" />
 
     <ProgressBar
         android:id="@+id/dialog_progressBar"
@@ -70,7 +65,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please enter the username and password of the student account to be linked."
+        android:text="Please enter the information of the supplier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,9 +76,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="@+id/dialog_link"
+        app:layout_constraintBottom_toBottomOf="@+id/dialog_add"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dialog_link"
-        app:layout_constraintTop_toTopOf="@+id/dialog_link" />
+        app:layout_constraintStart_toEndOf="@+id/dialog_add"
+        app:layout_constraintTop_toTopOf="@+id/dialog_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,4 +38,13 @@ public class HandleCode {
     public final static int BanUnbanSuccess = 23;
     public final static int BanUnbanFailed = 24;
 
+
+    public final static int AddSupplierSuccess = 25;
+    public final static int AddSupplierFailed = 26;
+    public final static int DoAddSupplier = 27;
+    public final static int RemoveSupplierSuccess = 28;
+    public final static int RemoveSupplierFailed = 29;
+
+    public final static int GetSupplierSuccess = 30;
+    public final static int GetSupplierFailed = 31;
 }
