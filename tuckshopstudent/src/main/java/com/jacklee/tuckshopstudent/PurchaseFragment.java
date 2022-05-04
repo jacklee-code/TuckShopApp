@@ -200,7 +200,8 @@ public class PurchaseFragment extends Fragment {
         binding.purchaseLoading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("UserId", GlobalVariables.profile.UserId);
+        hashMap.put("username", GlobalVariables.account.Username);
+        hashMap.put("password", GlobalVariables.account.getPassword());
 
         HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getFoodList.php", hashMap, new HttpCallbackListener() {
             @Override

@@ -4,16 +4,26 @@
     include("connectDB.php");
     include("myLibrary.php");
 
-    $userid = $_POST["UserId"];
-    $json = "";
+
 
     try {
-        $type = getUserTypeStringLower($db, $userid);
+        if (!isset($_POST["username"]) || !isset($_POST["password"]))
+            callForbidden();
 
-        if (strlen($type) < 1) {
-            http_response_code(403);
-            return;
-        }
+        $id = loginAndGetUserId($db, $_POST["username"], $_POST["password"]);
+        $userid = isset($_POST["targetid"]) ? $_POST["targetid"] : "";
+
+        $type = getUserTypeStringLower($db, $id);
+        if (strlen($id) < 1 || strlen($type) < 1)
+            callForbidden();
+
+        if ($type == "student")
+            $userid = $id;
+        else if ($type == "parent")
+            if (!isLinked($db, $id, $userid))
+                callForbidden();
+
+        $json = "";
 
         //if ($type == "student" || $type == "teacher") {
 

@@ -260,7 +260,9 @@ public class BanFragment extends Fragment {
         binding.banLoading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("UserId", studentid);
+        hashMap.put("username", GlobalVariables.account.Username);
+        hashMap.put("password", GlobalVariables.account.getPassword());
+        hashMap.put("targetid", studentid);
 
         HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getFoodList.php", hashMap, new HttpCallbackListener() {
             @Override

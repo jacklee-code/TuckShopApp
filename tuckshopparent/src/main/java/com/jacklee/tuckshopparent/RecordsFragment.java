@@ -20,6 +20,7 @@ import com.jacklee.tuckshopparent.databinding.FragmentRecordsBinding;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class RecordsFragment extends Fragment {
@@ -86,7 +87,7 @@ public class RecordsFragment extends Fragment {
                 }
             };
         };
-        GetBuyRecords();
+        getBuyRecords();
 
         return root;
     }
@@ -97,7 +98,48 @@ public class RecordsFragment extends Fragment {
         binding = null;
     }
 
-    private void GetBuyRecords() {
+
+    private void getStudentList() {
+        binding.recordsProgressBar.setVisibility(View.VISIBLE);
+        binding.recordsProgressBar.setVisibility(View.VISIBLE);
+        Map<String, String> hm = new HashMap<>();
+        hm.put("username", GlobalVariables.account.Username);
+        hm.put("password", GlobalVariables.account.getPassword());
+
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
+
+            @Override
+            public void onFinish(String response) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.ProfileSuccess;
+                msg.obj = response;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.Error_Msg;
+                msg.obj = e;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnForbidden() {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.ProfileFailed;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnBadRequest() {
+
+            }
+        });
+    }
+
+
+    private void getBuyRecords() {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
         binding.recordsLoading.setVisibility(View.VISIBLE);
