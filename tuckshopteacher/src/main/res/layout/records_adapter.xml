@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    android:weightSum="10">
+
+    <TextView
+        android:id="@+id/rlistitem_id"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="5dp"
+        android:gravity="center_vertical"
+        android:text="#1" />
+
+    <TextView
+        android:id="@+id/rlistitem_time"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4.75"
+        android:paddingLeft="5dp"
+        android:gravity="center_vertical"
+        android:text="2022-12-29 23:59:59 " />
+
+    <TextView
+        android:id="@+id/rlistitem_totalamount"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.75"
+        android:paddingLeft="5dp"
+        android:gravity="center_vertical"
+        android:text="$0.00" />
+
+    <Button
+        android:id="@+id/rlistitem_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.5"
+        android:text="Details" />
+
+
+</LinearLayout>

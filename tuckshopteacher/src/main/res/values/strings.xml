@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">TuckShopTeacher</string>
+    <string name="title_activity_login">Tuck Shop (Teacher Version)</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome ! "</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be longer than 5 characters</string>
+    <string name="login_failed">"Login failed. "</string>
+    <string name="fail_username_or_password">"Incorrect username or password"</string>
+    <string name="fail_network_problem">A network error occurred : </string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_purchase">Purchase</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_history">Records</string>
+</resources>

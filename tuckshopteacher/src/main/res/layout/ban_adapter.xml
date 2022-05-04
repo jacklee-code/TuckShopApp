@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    android:weightSum="10">
+
+    <TextView
+
+        android:id="@+id/blistitem_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:paddingLeft="5dp"
+        android:layout_weight="3"
+        android:gravity="center_vertical"
+        android:text="Food name ABC" />
+
+    <TextView
+
+        android:id="@+id/blistitem_type"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center_vertical"
+        android:text="Soft Drink" />
+
+    <TextView
+
+        android:id="@+id/blistitem_price"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center_vertical"
+        android:text="$50.00" />
+
+    <ToggleButton
+        android:id="@+id/blistitem_ban"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:textSize="10dp"
+        android:text="ToggleButton"
+        android:textOn="Banned"
+        android:textOff="Available"/>
+
+</LinearLayout>
