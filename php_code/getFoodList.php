@@ -13,6 +13,7 @@
         $id = loginAndGetUserId($db, $_POST["username"], $_POST["password"]);
         $userid = isset($_POST["targetid"]) ? $_POST["targetid"] : "";
 
+
         $type = getUserTypeStringLower($db, $id);
         if (strlen($id) < 1 || strlen($type) < 1)
             callForbidden();
@@ -23,6 +24,7 @@
             if (!isLinked($db, $id, $userid))
                 callForbidden();
 
+        $godmode = $type == "teacher";
         $json = "";
 
         //if ($type == "student" || $type == "teacher") {
@@ -33,14 +35,16 @@
         $statement->execute();
         $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        for ($x = 0; $x < count($results); $x++) {
-            $sql = "SELECT * FROM Banned WHERE StudentId = :userid AND FoodId = :foodid;";
-            $statement = $db->prepare($sql);
-            $statement->bindParam(":userid", $userid, PDO::PARAM_INT);
-            $statement->bindParam(":foodid", $results[$x]["FoodId"], PDO::PARAM_INT);
-            $statement->execute();
-            $results[$x]["Banned"] = $statement->rowCount() > 0;
-        }
+        if (!$godmode)
+            for ($x = 0; $x < count($results); $x++) {
+                $sql = "SELECT * FROM Banned WHERE StudentId = :userid AND FoodId = :foodid;";
+                $statement = $db->prepare($sql);
+                $statement->bindParam(":userid", $userid, PDO::PARAM_INT);
+                $statement->bindParam(":foodid", $results[$x]["FoodId"], PDO::PARAM_INT);
+                $statement->execute();
+                $results[$x]["Banned"] = $statement->rowCount() > 0;
+            }
+
         $json = json_encode($results, JSON_NUMERIC_CHECK);
 
         /*} else if ($type == "parent") {

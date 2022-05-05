@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.jacklee.tuckshopteacher.databinding.FragmentRecordsBinding;
+import com.jacklee.tuckshopteacher.databinding.FragmentReportBinding;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,17 +27,17 @@ import java.util.Map;
 
 public class ReportFragment extends Fragment {
 
-    private FragmentRecordsBinding binding;
+    private FragmentReportBinding binding;
     private ListView listView;
     private Handler mHandler;
-    private RecordsAdapter recordsAdapter;
+    private ReportAdapter reportAdapter;
 
     int selectedIndex = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentRecordsBinding.inflate(inflater, container, false);
+        binding = FragmentReportBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         mHandler = new Handler(){
@@ -45,49 +45,62 @@ public class ReportFragment extends Fragment {
 
                 try {
                     switch (msg.what) {
-                        case HandleCode.GetBuyRecordsSuccess:
+                        case HandleCode.ReportSuccess:
                         {
                             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-                            List<BuyRecord> records = Arrays.asList(gson.fromJson((String)msg.obj, BuyRecord[].class));
+                            List<ProductDetail> report = Arrays.asList(gson.fromJson((String)msg.obj, ProductDetail[].class));
+
+                            binding.reportNoproduct.setVisibility(report.size() == 0 ? View.VISIBLE : View.INVISIBLE);
 
                             // Create ListView
-                            listView = binding.recordsListview;
+                            listView = binding.reportListview;
                             listView.setItemsCanFocus(true);
-                            recordsAdapter = new RecordsAdapter(getActivity(), records);
-                            listView.setAdapter(recordsAdapter);
+                            reportAdapter = new ReportAdapter(getActivity(), report);
+                            listView.setAdapter(reportAdapter);
 
                             // Calculate total amount
                             double sum = 0.00;
-                            for (BuyRecord record : records) {
-                                sum += record.getTotalAmount();
+                            for (ProductDetail product : report) {
+                                sum += product.Income;
                             }
 
-                            binding.recordsTotalconsumption.setText("$ " + String.format("%.2f", sum));
+                            binding.reportTotalincome.setText("$ " + String.format("%.2f", sum));
+                        }
+
+                        binding.reportProgressBar.setVisibility(View.INVISIBLE);
+                        binding.reportLoading.setVisibility(View.INVISIBLE);
+
+                        break;
+
+
+                        case HandleCode.GetFoodListFailed:
+                        case HandleCode.ReportFailed: {
+                            fetchDataErrorToast();
                         }
                         break;
 
-                        case HandleCode.ProfileSuccess:
+                        case HandleCode.GetFoodListSuccess:
                         {
-                            GlobalVariables.profiles = Arrays.asList(new Gson().fromJson((String) msg.obj, StudentProfile[].class));
+                            Food[] foods = new Gson().fromJson((String) msg.obj, Food[].class);
 
-                            binding.recordsNolink.setVisibility(GlobalVariables.profiles.size() == 0 ? View.VISIBLE : View.INVISIBLE);
+                            binding.reportNofood.setVisibility(foods.length == 0 ? View.VISIBLE : View.INVISIBLE);
 
-                            String[] namelist = new String[GlobalVariables.profiles.size()];
-                            for (int i = 0; i< GlobalVariables.profiles.size(); i++) {
-                                namelist[i] = GlobalVariables.profiles.get(i).Username;
+                            String[] namelist = new String[foods.length];
+                            for (int i = 0; i< foods.length; i++) {
+                                namelist[i] = foods[i].FoodName;
                             }
 
                             ArrayAdapter<String> adp = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, namelist);
                             adp.setDropDownViewResource(R.layout.spinner_item);
-                            binding.recordsStudents.setAdapter(adp);
+                            binding.reportProducts.setAdapter(adp);
 
 
-                            binding.recordsStudents.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+                            binding.reportProducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
                             {
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
                                     selectedIndex = position;
-                                    getBuyRecords(GlobalVariables.profiles.get(selectedIndex).UserId);
+                                    getProductRecords(String.valueOf(foods[selectedIndex].FoodId));
                                 }
 
                                 @Override
@@ -97,25 +110,19 @@ public class ReportFragment extends Fragment {
                             });
 
 
-                            if (GlobalVariables.profiles.size() > 0)
-                                if (GlobalVariables.profiles.size() > selectedIndex)
-                                    binding.recordsStudents.setSelection(selectedIndex);
+                            if (foods.length > 0)
+                                if (foods.length > selectedIndex)
+                                    binding.reportProducts.setSelection(selectedIndex);
                                 else {
                                     selectedIndex = 0;
-                                    binding.recordsStudents.setSelection(0);
+                                    binding.reportProducts.setSelection(0);
                                 }
                             else {
-                                binding.recordsProgressBar.setVisibility(View.INVISIBLE);
-                                binding.recordsLoading.setVisibility(View.INVISIBLE);
+                                binding.reportProgressBar.setVisibility(View.INVISIBLE);
+                                binding.reportLoading.setVisibility(View.INVISIBLE);
                             }
 
 
-                        }
-                        break;
-
-                        case HandleCode.ProfileFailed:
-                        case HandleCode.GetBuyRecordsFailed: {
-                            fetchDataErrorToast();
                         }
                         break;
 
@@ -130,25 +137,22 @@ public class ReportFragment extends Fragment {
                         default:
                             break;
                     }
-
-                    binding.recordsLoading.setVisibility(View.INVISIBLE);
-                    binding.recordsProgressBar.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
 
                 }
             };
         };
 
-        getStudentList();
+        getFoodList();
 
         return root;
     }
 
     private void fetchDataErrorToast() {
         Toast.makeText(getContext(), "There was an error fetching the data, please try again.", Toast.LENGTH_SHORT).show();
-        binding.recordsNolink.setVisibility(View.VISIBLE);
-        binding.recordsProgressBar.setVisibility(View.INVISIBLE);
-        binding.recordsLoading.setVisibility(View.INVISIBLE);
+        binding.reportNoproduct.setVisibility(View.VISIBLE);
+        binding.reportProgressBar.setVisibility(View.INVISIBLE);
+        binding.reportLoading.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -158,62 +162,19 @@ public class ReportFragment extends Fragment {
     }
 
 
-    private void getStudentList() {
-        binding.recordsProgressBar.setVisibility(View.VISIBLE);
-        binding.recordsProgressBar.setVisibility(View.VISIBLE);
-        Map<String, String> hm = new HashMap<>();
-        hm.put("username", GlobalVariables.account.Username);
-        hm.put("password", GlobalVariables.account.getPassword());
-
-        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getStudentInfo.php", hm, new HttpCallbackListener() {
-
-            @Override
-            public void onFinish(String response) {
-                Message msg=mHandler.obtainMessage();
-                msg.what = HandleCode.ProfileSuccess;
-                msg.obj = response;
-                mHandler.sendMessage(msg);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Message msg=mHandler.obtainMessage();
-                msg.what = HandleCode.Error_Msg;
-                msg.obj = e;
-                mHandler.sendMessage(msg);
-            }
-
-            @Override
-            public void OnForbidden() {
-                Message msg=mHandler.obtainMessage();
-                msg.what = HandleCode.ProfileFailed;
-                mHandler.sendMessage(msg);
-            }
-
-            @Override
-            public void OnBadRequest() {
-
-            }
-        });
-    }
-
-
-    private void getBuyRecords(String studentid) {
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-
-        binding.recordsLoading.setVisibility(View.VISIBLE);
-        binding.recordsProgressBar.setVisibility(View.VISIBLE);
+    private void getFoodList() {
+        binding.reportProgressBar.setVisibility(View.VISIBLE);
+        binding.reportLoading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("username", GlobalVariables.account.Username);
         hashMap.put("password", GlobalVariables.account.getPassword());
-        hashMap.put("targetid", studentid);
 
-        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getBuyRecords.php", hashMap, new HttpCallbackListener() {
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getFoodList.php", hashMap, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Message msg=mHandler.obtainMessage();
-                msg.what = HandleCode.GetBuyRecordsSuccess;
+                msg.what = HandleCode.GetFoodListSuccess;
                 msg.obj = response;
                 mHandler.sendMessage(msg);
             }
@@ -226,7 +187,47 @@ public class ReportFragment extends Fragment {
             @Override
             public void OnForbidden() {
                 Message msg=mHandler.obtainMessage();
-                msg.what = HandleCode.GetBuyRecordsFailed;
+                msg.what = HandleCode.GetFoodListFailed;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnBadRequest() {
+
+            }
+        });
+    }
+
+
+    private void getProductRecords(String foodid) {
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+
+        binding.reportProgressBar.setVisibility(View.VISIBLE);
+        binding.reportLoading.setVisibility(View.VISIBLE);
+
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("username", GlobalVariables.account.Username);
+        hashMap.put("password", GlobalVariables.account.getPassword());
+        hashMap.put("foodid", foodid);
+
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getProductReport.php", hashMap, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.ReportSuccess;
+                msg.obj = response;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("myerror", e.toString());
+            }
+
+            @Override
+            public void OnForbidden() {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.ReportFailed;
                 mHandler.sendMessage(msg);
             }
 

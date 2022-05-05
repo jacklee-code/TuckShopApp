@@ -47,4 +47,7 @@ public class HandleCode {
 
     public final static int GetSupplierSuccess = 30;
     public final static int GetSupplierFailed = 31;
+
+    public final static int ReportSuccess = 32;
+    public final static int ReportFailed = 33;
 }

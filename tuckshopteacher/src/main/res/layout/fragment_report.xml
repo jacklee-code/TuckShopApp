@@ -25,7 +25,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="8dp"
-        android:text="No products found please try again"
+        android:text="There is no purchase history for this product"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.42" />
+
+    <TextView
+        android:id="@+id/report_nofood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="8dp"
+        android:text="There are no food items in the database"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +79,7 @@
         app:layout_constraintTop_toBottomOf="@+id/report_progressBar" />
 
     <ListView
-
+        android:id="@+id/report_listview"
         android:layout_width="match_parent"
         android:layout_height="550dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -98,4 +112,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textview11"
         app:layout_constraintVertical_bias="0.2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
