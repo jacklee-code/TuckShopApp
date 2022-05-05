@@ -59,7 +59,7 @@ public class FoodAdapter extends BaseAdapter {
         rowView = inflater.inflate(R.layout.food_adapter, parent, false);
 
         ImageButton save, delete;
-        EditText foodname, foodprice;
+        EditText foodname, foodprice, foodquantity;
         Spinner foodtype;
 
         save = (ImageButton) rowView.findViewById(R.id.flistitem_savechange);
@@ -69,16 +69,38 @@ public class FoodAdapter extends BaseAdapter {
         foodname = (EditText) rowView.findViewById(R.id.flistitem_name);
         foodtype = (Spinner) rowView.findViewById(R.id.flistitem_type);
         foodprice = (EditText) rowView.findViewById(R.id.flistitem_price);
+        foodquantity = (EditText) rowView.findViewById(R.id.flistitem_quantity);
 
         foodname.setTag(foodList.get(position).FoodId);
         foodname.setText(foodList.get(position).FoodName);
+        foodquantity.setText("" + foodList.get(position).Quantity);
         foodprice.setText("$" + String.format("%.2f", foodList.get(position).Price));
 
         //Load Type
         loadSpinner(foodtype, foodList.get(position).TypeId);
 
         //Load Watcher
-        foodprice.addTextChangedListener(new DollarWatcher(foodprice, save, foodname));
+        foodprice.addTextChangedListener(new DollarWatcher(foodprice, save, foodname, foodquantity));
+
+        TextWatcher generalWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                setSaveEnable(save, foodname.length() > 0 && isValidDecimal(foodprice.getText().toString().replace("$", "")) && isInteger(foodquantity.getText().toString()));
+            }
+        };
+
+        foodname.addTextChangedListener(generalWatcher);
+        foodquantity.addTextChangedListener(generalWatcher);
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -138,31 +160,37 @@ public class FoodAdapter extends BaseAdapter {
 
     private class DollarWatcher implements TextWatcher {
         private final EditText et;
-        private final EditText foodname;
+        private final EditText foodname, quantity;
         private final ImageButton saveButton;
 
-        public DollarWatcher(EditText editText, ImageButton saveButton, EditText foodname) {
+        public DollarWatcher(EditText editText, ImageButton saveButton, EditText foodname, EditText quantity) {
             this.et = editText;
             this.foodname = foodname;
             this.saveButton = saveButton;
+            this.quantity = quantity;
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            et.removeTextChangedListener(this);
-            if (s.length() < 1) {
-                et.setText("$");
-                et.setSelection(s.length() + 1);
-            }
+            try {
+                et.removeTextChangedListener(this);
 
-            if (s.length() != 0)
-                while (s.toString().toCharArray()[0] != '$') {
+
+                while (s.length() != 0 && s.toString().toCharArray()[0] != '$') {
                     s.delete(0, 1);
                 }
 
-            setSaveEnable(saveButton, foodname.length() > 0 && isValidDecimal(s.toString().replace("$", "")));
+                if (s.length() < 1) {
+                    et.setText("$");
+                    et.setSelection(s.length() + 1);
+                }
 
-            et.addTextChangedListener(this);
+                setSaveEnable(saveButton, foodname.length() > 0 && isValidDecimal(s.toString().replace("$", "")) && isInteger(quantity.getText().toString()));
+
+                et.addTextChangedListener(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -182,6 +210,10 @@ public class FoodAdapter extends BaseAdapter {
 
     private boolean isValidDecimal(String numberStr) {
         return numberStr.matches("^\\d+$$") || numberStr.matches("\\d+\\.\\d+$");
+    }
+
+    private boolean isInteger(String numberStr) {
+        return numberStr.matches("\\d+");
     }
 
 }
