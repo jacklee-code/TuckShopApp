@@ -50,6 +50,8 @@ public class RecordsFragment extends Fragment {
                             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
                             List<BuyRecord> records = Arrays.asList(gson.fromJson((String)msg.obj, BuyRecord[].class));
 
+                            binding.recordsNorecord.setVisibility(records.size() == 0 ? View.VISIBLE : View.INVISIBLE);
+
                             // Create ListView
                             listView = binding.recordsListview;
                             listView.setItemsCanFocus(true);
