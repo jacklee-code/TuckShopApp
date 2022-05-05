@@ -13,14 +13,24 @@
         android:layout_weight="1"
         android:paddingLeft="5dp"
         android:gravity="center_vertical"
-        android:text="#15" />
+        android:text="#22" />
+
+
+    <TextView
+        android:id="@+id/reportlistitem_customer"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2.25"
+        android:paddingLeft="5dp"
+        android:gravity="center_vertical"
+        android:text="Jack Lee" />
 
     <TextView
         android:id="@+id/reportlistitem_time"
         android:layout_width="0dp"
         android:padding="10dp"
         android:layout_height="match_parent"
-        android:layout_weight="4.75"
+        android:layout_weight="3.75"
         android:gravity="center_vertical"
         android:text="2022-12-29 23:59:59 " />
 
@@ -28,20 +38,19 @@
         android:id="@+id/reportlistitem_quantity"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.75"
+        android:layout_weight="1"
         android:padding="10dp"
         android:paddingLeft="5dp"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|center_horizontal"
         android:text="5" />
 
     <TextView
         android:id="@+id/reportlistitem_income"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2.5"
-        android:padding="10dp"
+        android:layout_weight="2"
         android:paddingLeft="5dp"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|center_horizontal"
         android:text="$ 10000.00" />
 
 

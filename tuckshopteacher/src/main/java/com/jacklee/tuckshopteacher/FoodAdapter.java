@@ -7,13 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.util.List;
 
-public class BanAdapter extends BaseAdapter {
+public class FoodAdapter extends BaseAdapter {
 
     private Context context;
     private List<Food> foodList;
@@ -21,7 +22,7 @@ public class BanAdapter extends BaseAdapter {
     Handler handler;
 
     LayoutInflater mInflater;
-    public BanAdapter(Context context, List<Food> foodList, Handler handler){
+    public FoodAdapter(Context context, List<Food> foodList, Handler handler){
         this.context = context;
         this.foodList = foodList;
         this.handler = handler;
@@ -48,31 +49,21 @@ public class BanAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        rowView = inflater.inflate(R.layout.ban_adapter, parent, false);
+        rowView = inflater.inflate(R.layout.food_adapter, parent, false);
 
-        ToggleButton ban;
+        Button ban;
         TextView foodname, foodtype, foodprice;
 
-        ban = (ToggleButton) rowView.findViewById(R.id.blistitem_ban);
-        foodname = (TextView) rowView.findViewById(R.id.blistitem_name);
-        foodtype = (TextView) rowView.findViewById(R.id.blistitem_type);
-        foodprice = (TextView) rowView.findViewById(R.id.blistitem_price);
+        ban = (Button) rowView.findViewById(R.id.flistitem_change);
+        foodname = (TextView) rowView.findViewById(R.id.flistitem_name);
+        foodtype = (TextView) rowView.findViewById(R.id.flistitem_type);
+        foodprice = (TextView) rowView.findViewById(R.id.flistitem_price);
 
-        ban.setChecked(foodList.get(position).Banned);
         foodname.setTag(foodList.get(position).FoodId);
         foodname.setText(foodList.get(position).FoodName);
         foodtype.setText(foodList.get(position).FoodType);
         foodprice.setText("$" + String.format("%.2f", foodList.get(position).Price));
 
-        ban.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                Message msg = handler.obtainMessage();
-                msg.what = isChecked ? HandleCode.DoBan : HandleCode.DoUnban;
-                msg.obj = String.valueOf(foodList.get(position).FoodId);
-                handler.sendMessage(msg);
-            }
-        });
 
         return rowView;
     }

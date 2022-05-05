@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_management"
-        android:name="com.jacklee.tuckshopteacher.BanFragment"
+        android:name="com.jacklee.tuckshopteacher.FoodFragment"
         android:label="Product Management"
-        tools:layout="@layout/fragment_ban" />
+        tools:layout="@layout/fragment_food" />
 
     <fragment
         android:id="@+id/navigation_supplier"

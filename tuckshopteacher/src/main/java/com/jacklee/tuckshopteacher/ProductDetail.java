@@ -7,4 +7,5 @@ public class ProductDetail {
     public int RecordId;
     public int Quantity;
     public double Income;
+    public String Customer;
 }

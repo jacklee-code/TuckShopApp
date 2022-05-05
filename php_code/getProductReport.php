@@ -13,9 +13,10 @@
         if (!isTeacher($db, $userid))
             callForbidden();
 
-        $sql = "SELECT s.RecordId, b.Time, s.Quantity, s.Quantity * f.Price AS Income
-                FROM BuySlots AS s, BuyRecords AS b, Foods AS f
-                WHERE s.RecordId = b.RecordId AND f.FoodId = s.FoodId AND f.FoodId = :foodid";
+        $sql = "SELECT s.RecordId, a.Fullname AS Customer, b.Time, s.Quantity, s.Quantity * f.Price AS Income
+                FROM BuySlots AS s, BuyRecords AS b, Foods AS f, Accounts AS a
+                WHERE s.RecordId = b.RecordId AND f.FoodId = s.FoodId AND f.FoodId = :foodid
+                AND b.StudentId = a.UserId";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(":foodid", $foodid, PDO::PARAM_INT);
         $stmt->execute();

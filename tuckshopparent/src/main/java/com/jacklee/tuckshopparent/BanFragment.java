@@ -76,7 +76,7 @@ public class BanFragment extends Fragment {
 
                             String[] namelist = new String[GlobalVariables.profiles.size()];
                             for (int i = 0; i< GlobalVariables.profiles.size(); i++) {
-                                namelist[i] = GlobalVariables.profiles.get(i).Username;
+                                namelist[i] = GlobalVariables.profiles.get(i).Fullname;
                             }
 
                             ArrayAdapter<String> adp = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, namelist);

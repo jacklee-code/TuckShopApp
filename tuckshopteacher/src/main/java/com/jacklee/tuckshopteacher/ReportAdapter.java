@@ -43,14 +43,16 @@ public class ReportAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         rowView = inflater.inflate(R.layout.report_adapter, parent, false);
 
-        TextView reportid, reportdatetime, reportincome, reportquantity;
+        TextView reportrecordid, reportcustomer, reportdatetime, reportincome, reportquantity;
 
-        reportid = (TextView) rowView.findViewById(R.id.reportlistitem_recordid);
+        reportrecordid = (TextView) rowView.findViewById(R.id.reportlistitem_recordid);
+        reportcustomer = (TextView) rowView.findViewById(R.id.reportlistitem_customer);
         reportdatetime = (TextView) rowView.findViewById(R.id.reportlistitem_time);
         reportincome = (TextView) rowView.findViewById(R.id.reportlistitem_income);
         reportquantity = (TextView) rowView.findViewById(R.id.reportlistitem_quantity);
 
-        reportid.setText("#" + productList.get(position).RecordId);
+        reportrecordid.setText("#" + productList.get(position).RecordId);
+        reportcustomer.setText(productList.get(position).Customer);
         reportquantity.setText(String.valueOf(productList.get(position).Quantity));
         reportincome.setText("$ " + String.format("%.2f", productList.get(position).Income));
 
