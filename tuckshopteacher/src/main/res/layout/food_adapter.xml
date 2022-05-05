@@ -8,49 +8,49 @@
     android:padding="5dp"
     android:weightSum="10">
 
-    <TextView
-
+    <EditText
         android:id="@+id/flistitem_name"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:gravity="center_vertical"
-        android:paddingLeft="5dp"
-        android:text="Food name" />
+        android:hint="Food name"
+        android:paddingLeft="5dp" />
 
-    <TextView
+    <Spinner
 
         android:id="@+id/flistitem_type"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2.25"
+        android:layout_weight="3"
         android:gravity="center_vertical"
         android:text="Soft Drink" />
 
-    <TextView
+    <EditText
 
         android:id="@+id/flistitem_price"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.75"
-        android:gravity="center_vertical"
-        android:text="$50.00" />
-
-    <Button
-        android:id="@+id/flistitem_change"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="center_vertical|center_horizontal"
-        android:text="Change"
-        android:textSize="10dp" />
+        android:hint="Price"
+        android:inputType="numberDecimal"
+        android:textSize="15sp"/>
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/flistitem_savechange"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        app:srcCompat="@android:drawable/ic_delete" />
+        app:srcCompat="@drawable/ic_baseline_save_24" />
+
+    <ImageButton
+        android:id="@+id/flistitem_delete"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        app:srcCompat="@drawable/ic_baseline_close_24" />
 
 </LinearLayout>

@@ -32,6 +32,7 @@ public class FoodFragment extends Fragment {
     private ListView listView;
     private FoodAdapter foodAdapter;
     private Handler mHandler;
+    private FoodType[] foodTypes;
 
     private int selectedIndex = 0;
 
@@ -48,14 +49,16 @@ public class FoodFragment extends Fragment {
                         {
                             foodList = Arrays.asList(new Gson().fromJson((String) msg.obj, Food[].class));
 
+                            binding.foodNofood.setVisibility(foodList.size() == 0 ? View.VISIBLE : View.INVISIBLE);
+
                             // Create ListView
                             listView = binding.foodListview;
                             listView.setItemsCanFocus(true);
-                            foodAdapter = new FoodAdapter(getActivity(), foodList, mHandler);
+                            foodAdapter = new FoodAdapter(getActivity(), foodList, mHandler, foodTypes);
                             listView.setAdapter(foodAdapter);
 
                             binding.foodProgressBar.setVisibility(View.INVISIBLE);
-                            binding.banLoading.setVisibility(View.INVISIBLE);
+                            binding.foodLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 
@@ -63,7 +66,7 @@ public class FoodFragment extends Fragment {
                         {
                             Toast.makeText(getContext(), "Failed to get food list, please try again.", Toast.LENGTH_SHORT);
                             binding.foodProgressBar.setVisibility(View.INVISIBLE);
-                            binding.banLoading.setVisibility(View.INVISIBLE);
+                            binding.foodLoading.setVisibility(View.INVISIBLE);
                         }
                         break;
 
@@ -74,6 +77,25 @@ public class FoodFragment extends Fragment {
                             Log.e("myerror", response);
                         }
                         break;
+
+                        case HandleCode.FoodTypesSuccess:
+                        {
+                            foodTypes = new Gson().fromJson((String)msg.obj, FoodType[].class);
+                            getFoodList("");
+                        }
+                        break;
+
+                        case HandleCode.FoodTypesFailed:
+                        case HandleCode.AddFoodFailed:
+                        case HandleCode.RemoveFoodFailed:
+                        case HandleCode.ChangeFailed:
+                        {
+                            Toast.makeText(getContext(), "Operation failed, please try again.", Toast.LENGTH_SHORT).show();
+                            binding.foodProgressBar.setVisibility(View.INVISIBLE);
+                            binding.foodLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+
 
                         default:
                             break;
@@ -89,7 +111,6 @@ public class FoodFragment extends Fragment {
         // Button Listener
         AddFoodClicked();
 
-        getFoodList("");
         getFoodTypeList();
 
         return root;
@@ -99,23 +120,53 @@ public class FoodFragment extends Fragment {
         binding.foodAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listView.addView(getActivity().findViewById(R.id.food_listitem_view));
+
             }
         });
     }
 
     private void getFoodTypeList() {
+        binding.foodProgressBar.setVisibility(View.VISIBLE);
+        binding.foodLoading.setVisibility(View.VISIBLE);
 
+        HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getFoodTypes.php", "", new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.FoodTypesSuccess;
+                msg.obj = response;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("myerror", e.toString());
+            }
+
+            @Override
+            public void OnForbidden() {
+                Message msg=mHandler.obtainMessage();
+                msg.what = HandleCode.FoodTypesFailed;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void OnBadRequest() {
+
+            }
+        });
     }
 
     private void getFoodList(String studentid) {
         binding.foodProgressBar.setVisibility(View.VISIBLE);
-        binding.banLoading.setVisibility(View.VISIBLE);
+        binding.foodLoading.setVisibility(View.VISIBLE);
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("username", GlobalVariables.account.Username);
         hashMap.put("password", GlobalVariables.account.getPassword());
         hashMap.put("targetid", studentid);
+
+
 
         HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/getFoodList.php", hashMap, new HttpCallbackListener() {
             @Override

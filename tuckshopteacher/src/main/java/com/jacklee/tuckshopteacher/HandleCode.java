@@ -50,4 +50,16 @@ public class HandleCode {
 
     public final static int ReportSuccess = 32;
     public final static int ReportFailed = 33;
+
+    public final static int ChangeSuccess = 34;
+    public final static int ChangeFailed = 35;
+
+    public final static int AddFoodSuccess = 36;
+    public final static int AddFoodFailed = 37;
+
+    public final static int RemoveFoodSuccess = 38;
+    public final static int RemoveFoodFailed = 39;
+
+    public final static int FoodTypesSuccess = 40;
+    public final static int FoodTypesFailed = 41;
 }
