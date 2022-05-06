@@ -29,14 +29,15 @@
 
         if (count($results) > 0) {
             for ($x = 0; $x < count($results); $x++) {
-                $sql = "SELECT FoodId, Quantity FROM BuySlots WHERE RecordId = :id;";
+                $sql = "SELECT * FROM BuySlots WHERE RecordId = :id;";
                 $statement = $db->prepare($sql);
                 $statement->bindParam(":id", $results[$x]["RecordId"], PDO::PARAM_INT);
                 $statement->execute();
-                $foodList = $statement->fetchAll(PDO::FETCH_ASSOC);
+                //$foodList = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-                $foodArray = array();
-                foreach ($foodList as $key => $val) {
+                $foodArray = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+                /*foreach ($foodList as $key => $val) {
                     $sql = "SELECT f.FoodId, f.FoodName, f.Price, s.SupplierName AS Supplier, t.TypeName AS FoodType
                             FROM Foods AS f, Suppliers AS s, FoodType AS t
                             WHERE f.FoodId = :foodid AND t.TypeId = f.TypeId AND s.SupplierId = f.SupplierId;";
@@ -48,7 +49,7 @@
                         $food["Quantity"] = $val["Quantity"];
                         $foodArray[] = $food;
                     }
-                }
+                }*/
                 $results[$x]["jsonString"] = json_encode($foodArray, JSON_NUMERIC_CHECK);
             }
         }

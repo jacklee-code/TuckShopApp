@@ -68,7 +68,7 @@
             $stmt->execute();
             $recordid = $db->lastInsertId();
 
-            // Remove Item + Add Item to Slot
+            // Change quantity
             foreach($json["ItemList"] as $key => $val) {
                 // Remove from quantity
                 $sql = "UPDATE Foods SET Quantity = Quantity - :amount WHERE FoodId=:foodId;";
@@ -77,12 +77,21 @@
                 $stmt->bindParam(":amount", $val, PDO::PARAM_INT);
                 $stmt->execute();
 
-                //Add a new slot
-                $sql = "INSERT INTO BuySlots (RecordId, FoodId, Quantity) VALUES (:recordid, :foodid, :quantity);";
+                // Get food name & price
+                $sql = "SELECT FoodName, Price FROM Foods WHERE FoodId = :id;";
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(":id", $key);
+                $stmt->execute();
+                $food = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                // Create new slot
+                $sql = "INSERT INTO BuySlots (RecordId, FoodId, Quantity, Foodname, Price) VALUES (:recordid, :foodid, :quantity, :foodname, :price);";
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam(":recordid", $recordid, PDO::PARAM_INT);
                 $stmt->bindParam(":foodid", $key, PDO::PARAM_INT);
                 $stmt->bindParam(":quantity", $val, PDO::PARAM_INT);
+                $stmt->bindParam(":foodname", $food["FoodName"]);
+                $stmt->bindParam(":price", $food["Price"]);
                 $stmt->execute();
             }
 
