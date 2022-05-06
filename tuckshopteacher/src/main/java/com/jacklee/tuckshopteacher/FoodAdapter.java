@@ -85,7 +85,6 @@ public class FoodAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.flistitem_delete) {
-                    //TODO: add a alert dialog
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage("\nAre you sure you want to remove this product?\n");
