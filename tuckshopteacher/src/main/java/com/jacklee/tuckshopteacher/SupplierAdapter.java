@@ -70,7 +70,7 @@ public class SupplierAdapter extends BaseAdapter {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Warning!");
-                builder.setMessage("\nAre you sure you want to remove this account?\n\nPlease note that when you delete this supplier, the purchase record and food list related to it will be deleted at the same time.\n");
+                builder.setMessage("\nAre you sure you want to remove this account?\n\nPlease note that food from this supplier will be removed at the same time.\n");
                 builder.setCancelable(false);
                 builder.setPositiveButton("Yes (Irreversible)", new DialogInterface.OnClickListener() {
 

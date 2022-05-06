@@ -1,6 +1,7 @@
 package com.jacklee.tuckshopteacher;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.HashMap;
 import java.util.List;
@@ -82,40 +85,58 @@ public class FoodAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.flistitem_delete) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    String url = GlobalVariables.hostname + "/removeFood.php";
-                    Map<String, String> hm = new HashMap<>();
-                    hm.put("username", GlobalVariables.account.Username);
-                    hm.put("password", GlobalVariables.account.getPassword());
-                    hm.put("foodid", String.valueOf(foodList.get(position).FoodId));
+                    //TODO: add a alert dialog
 
-                    HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("\nAre you sure you want to remove this product?\n");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
                         @Override
-                        public void onFinish(String response) {
-                            Message msg=handler.obtainMessage();
-                            msg.what = HandleCode.RemoveFoodSuccess;
-                            handler.sendMessage(msg);
+                        public void onClick(DialogInterface dialog, int which) {
+                            progressBar.setVisibility(View.VISIBLE);
+                            String url = GlobalVariables.hostname + "/removeFood.php";
+                            Map<String, String> hm = new HashMap<>();
+                            hm.put("username", GlobalVariables.account.Username);
+                            hm.put("password", GlobalVariables.account.getPassword());
+                            hm.put("foodid", String.valueOf(foodList.get(position).FoodId));
+
+                            HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
+
+                                @Override
+                                public void onFinish(String response) {
+                                    Message msg=handler.obtainMessage();
+                                    msg.what = HandleCode.RemoveFoodSuccess;
+                                    handler.sendMessage(msg);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Message msg=handler.obtainMessage();
+                                    msg.what = HandleCode.Error_Msg;
+                                    msg.obj = e;
+                                    handler.sendMessage(msg);
+                                }
+
+                                @Override
+                                public void OnForbidden() {
+                                    Message msg=handler.obtainMessage();
+                                    msg.what = HandleCode.RemoveFoodFailed;
+                                    handler.sendMessage(msg);
+                                }
+
+                                @Override
+                                public void OnBadRequest() { }
+                            });
                         }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Message msg=handler.obtainMessage();
-                            msg.what = HandleCode.Error_Msg;
-                            msg.obj = e;
-                            handler.sendMessage(msg);
-                        }
-
-                        @Override
-                        public void OnForbidden() {
-                            Message msg=handler.obtainMessage();
-                            msg.what = HandleCode.RemoveFoodFailed;
-                            handler.sendMessage(msg);
-                        }
-
-                        @Override
-                        public void OnBadRequest() { }
                     });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
 
                 } else if (v.getId() == R.id.flistitem_edit) {
                     Message msg = handler.obtainMessage();

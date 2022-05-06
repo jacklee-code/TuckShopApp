@@ -122,7 +122,7 @@ public class ProfileAdapter extends BaseAdapter {
                 builder.setTitle("Unlink Confirmation");
                 builder.setMessage("\nAre you sure you want to unlink this account?\n");
                 builder.setCancelable(false);
-                builder.setPositiveButton("Yes - Unlink", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
