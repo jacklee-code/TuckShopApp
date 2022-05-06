@@ -29,8 +29,8 @@
 
         //if ($type == "student" || $type == "teacher") {
 
-        $sql = "SELECT f.FoodId, f.FoodName, t.TypeName AS FoodType, f.TypeId, f.Quantity, f.Price, s.SupplierName AS Supplier
-                      FROM Foods AS f, Suppliers AS s, FoodType AS t WHERE f.TypeId = t.TypeId AND f.SupplierId = s.SupplierId;";
+        $sql = "SELECT f.FoodId, f.FoodName, t.TypeName AS FoodType, f.TypeId, f.SupplierId, f.Quantity, f.Price, s.SupplierName AS Supplier
+                FROM Foods AS f, Suppliers AS s, FoodType AS t WHERE f.TypeId = t.TypeId AND f.SupplierId = s.SupplierId;";
         $statement = $db->prepare($sql);
         $statement->execute();
         $results = $statement->fetchAll(PDO::FETCH_ASSOC);

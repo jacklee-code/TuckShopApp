@@ -60,7 +60,7 @@
         android:textSize="12sp" />
 
     <ImageButton
-        android:id="@+id/flistitem_savechange"
+        android:id="@+id/flistitem_edit"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

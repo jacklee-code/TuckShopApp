@@ -49,8 +49,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:hint="Food Price (Per Serving)"
+        android:hint="Price (Per Serving)"
         android:layout_marginRight="20dp"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dialog2_supplierlist" />
@@ -64,6 +65,7 @@
         android:layout_marginLeft="20dp"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
+        android:inputType="number"
         app:layout_constraintTop_toBottomOf="@+id/dialog2_supplierlist" />
 
     <Button

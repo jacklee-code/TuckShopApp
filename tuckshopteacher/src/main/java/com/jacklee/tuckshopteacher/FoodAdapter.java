@@ -1,20 +1,16 @@
 package com.jacklee.tuckshopteacher;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.List;
@@ -59,63 +55,40 @@ public class FoodAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         rowView = inflater.inflate(R.layout.food_adapter, parent, false);
 
-        ImageButton save, delete;
-        TextView foodname, foodprice, foodquantity, foodtype;
+        ImageButton edit, delete;
+        TextView foodname, foodprice, foodquantity, foodtype, foodsupplier;
 
-        save = (ImageButton) rowView.findViewById(R.id.flistitem_savechange);
-        setSaveEnable(save, false);
-
+        edit = (ImageButton) rowView.findViewById(R.id.flistitem_edit);
         delete = (ImageButton) rowView.findViewById(R.id.flistitem_delete);
+
         foodname = (TextView) rowView.findViewById(R.id.flistitem_name);
         foodtype = (TextView) rowView.findViewById(R.id.flistitem_type);
         foodprice = (TextView) rowView.findViewById(R.id.flistitem_price);
         foodquantity = (TextView) rowView.findViewById(R.id.flistitem_quantity);
+        foodsupplier = (TextView) rowView.findViewById(R.id.flistitem_supplier);
 
-        foodname.setTag(foodList.get(position).FoodId);
         foodname.setText(foodList.get(position).FoodName);
+        foodtype.setText(foodList.get(position).FoodType);
         foodquantity.setText("" + foodList.get(position).Quantity);
+        foodsupplier.setText(foodList.get(position).Supplier);
         foodprice.setText("$" + String.format("%.2f", foodList.get(position).Price));
-
-        //Load Type
-        loadSpinner(foodtype, foodList.get(position).TypeId);
-
-        //Load Watcher
-        foodprice.addTextChangedListener(new DollarWatcher(foodprice, save, foodname, foodquantity));
-
-        TextWatcher generalWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                setSaveEnable(save, foodname.length() > 0 && isValidDecimal(foodprice.getText().toString().replace("$", "")) && isInteger(foodquantity.getText().toString()));
-            }
-        };
-
-        foodname.addTextChangedListener(generalWatcher);
-        foodquantity.addTextChangedListener(generalWatcher);
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.flistitem_delete) {
 
-                } else if (v.getId() == R.id.flistitem_savechange) {
-
+                } else if (v.getId() == R.id.flistitem_edit) {
+                    Message msg = handler.obtainMessage();
+                    msg.what = HandleCode.DoEditFood;
+                    msg.obj = foodList.get(position);
+                    handler.sendMessage(msg);
                 }
             }
         };
 
-        save.setOnClickListener(onClickListener);
+        edit.setOnClickListener(onClickListener);
         delete.setOnClickListener(onClickListener);
-
 
         return rowView;
     }

@@ -8,5 +8,6 @@ public class Food {
     public int Quantity;
     public Double Price;
     public String Supplier;
+    public String SupplierId;
     public Boolean Banned;
 }

@@ -11,12 +11,13 @@
 
         $userid = loginAndGetUserId($db, $username, $password);
 
-        if (strlen($userid) == 0 || !isTeacher($userid))
+        if (strlen($userid) == 0 || !isTeacher($db, $userid))
             callForbidden();
 
         //check arguments
-        $passed = isset($_POST["foodid"]) && strlen($_POST["foodid"]) > 0;
-        $passed = $passed && isset($_POST["foodname"]) && strlen($_POST["foodname"]) > 0;
+        $editmode = isset($_POST["foodid"]) && strlen($_POST["foodid"]) > 0;
+
+        $passed = isset($_POST["foodname"]) && strlen($_POST["foodname"]) > 0;
         $passed = $passed && isset($_POST["supplierid"]) && strlen($_POST["supplierid"]) > 0;
         $passed = $passed && isset($_POST["typeid"]) && strlen($_POST["typeid"]) > 0;
         $passed = $passed && isset($_POST["quantity"]) && strlen($_POST["quantity"]) > 0;
@@ -33,8 +34,23 @@
         $quantity = $_POST["quantity"];
         $price = $_POST["price"];
 
-        $sql = "UPDATE Foods SET FoodName = :foodname, SupplierId = :supplierid, TypeId = :typeid, Quantity = :quantity, Price = :price WHERE FoodId = :foodid;";
+        $sql = "";
 
+        if ($editmode)
+            $sql = "UPDATE Foods SET FoodName = :foodname, SupplierId = :supplierid, TypeId = :typeid, Quantity = :quantity, Price = :price WHERE FoodId = :foodid;";
+        else
+            $sql= "INSERT INTO Foods (FoodName, SupplierId, TypeId, Quantity, Price) VALUES (:foodname, :supplierid, :typeid, :quantity, :price);";
+
+        $stmt = $db->prepare($sql);
+        if ($editmode)
+            $stmt->bindParam(":foodid", $foodid, PDO::PARAM_INT);
+        $stmt->bindParam(":foodname" ,$foodname);
+        $stmt->bindParam(":supplierid" ,$supplierid, PDO::PARAM_INT);
+        $stmt->bindParam(":typeid" ,$typeid, PDO::PARAM_INT);
+        $stmt->bindParam(":quantity" ,$quantity,PDO::PARAM_INT);
+        $stmt->bindParam(":price" ,$price);
+
+        $stmt->execute();
     }
 
     catch (Exception $e) {

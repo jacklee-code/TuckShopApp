@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -27,7 +26,6 @@ import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 import com.jacklee.tuckshopteacher.databinding.FragmentFoodBinding;
 
-import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +40,11 @@ public class FoodFragment extends Fragment {
     private FoodAdapter foodAdapter;
     private Handler mHandler;
     private FoodType[] foodTypes;
-    private Supplier[] supplierList;
+    private Supplier[] suppliers;
+
+    private int selectedSupplierId, selectedFoodTypeId;
 
     private ProgressBar edit_progressBar;
-
-    private int selectedIndex = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -71,6 +69,7 @@ public class FoodFragment extends Fragment {
 
                             binding.foodProgressBar.setVisibility(View.INVISIBLE);
                             binding.foodLoading.setVisibility(View.INVISIBLE);
+                            binding.foodAdd.setEnabled(true);
                         }
                         break;
 
@@ -99,16 +98,22 @@ public class FoodFragment extends Fragment {
 
                         case HandleCode.GetSupplierSuccess:
                         {
-                            supplierList = new Gson().fromJson((String) msg.obj, Supplier[].class);
+                            suppliers = new Gson().fromJson((String) msg.obj, Supplier[].class);
                             getFoodList("");
+                        }
+                        break;
+
+                        case  HandleCode.DoEditFood:
+                        {
+                            Food food = (Food) msg.obj;
+                            showFoodEditDialog(food, true);
                         }
                         break;
 
                         case HandleCode.GetSupplierFailed:
                         case HandleCode.FoodTypesFailed:
-                        case HandleCode.AddFoodFailed:
+                        case HandleCode.EditFoodFailed:
                         case HandleCode.RemoveFoodFailed:
-                        case HandleCode.ChangeFailed:
                         {
                             Toast.makeText(getContext(), "Operation failed, please try again.", Toast.LENGTH_SHORT).show();
                             binding.foodProgressBar.setVisibility(View.INVISIBLE);
@@ -116,12 +121,19 @@ public class FoodFragment extends Fragment {
                         }
                         break;
 
+                        case HandleCode.EditFoodSuccess:
+                        {
+                            Toast.makeText(getContext(), "Update food information successfully", Toast.LENGTH_SHORT).show();
+                            ((Dialog) msg.obj).dismiss();
+                            getFoodTypeList();
+                        }
+                        break;
 
                         default:
                             break;
                     }
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
 
 
@@ -140,12 +152,13 @@ public class FoodFragment extends Fragment {
         binding.foodAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showFoodEditDialog(null, false);
             }
         });
     }
 
     private void getFoodTypeList() {
+        binding.foodAdd.setEnabled(false);
         binding.foodProgressBar.setVisibility(View.VISIBLE);
         binding.foodLoading.setVisibility(View.VISIBLE);
 
@@ -250,7 +263,7 @@ public class FoodFragment extends Fragment {
         });
     }
 
-    private void showFoodEditDialog(FoodType[] foodtypeList, Supplier[] supplierList, Food foodInfo, boolean editmode) {
+    private void showFoodEditDialog(Food foodInfo, boolean editmode) {
         View food_view;
 
         Spinner edit_types, edit_suppliers;
@@ -276,6 +289,34 @@ public class FoodFragment extends Fragment {
         edit_cancel = (Button) food_view.findViewById(R.id.dialog2_cancel);
         edit_progressBar = (ProgressBar) food_view.findViewById(R.id.dialog2_progressBar);
 
+        int i = 0;
+        int typeIndex = -1;
+        int supplierIndex = -1;
+
+        String[] foodtypelist = new String[foodTypes.length];
+        for (FoodType type : foodTypes) {
+            foodtypelist[i] = type.Name;
+            if (editmode) {
+                if (foodInfo.TypeId == type.Id)
+                    typeIndex = i;
+            }
+            i++;
+        }
+
+        i = 0;
+        String[] supplernamelist = new String[suppliers.length];
+        for (Supplier supplier : suppliers) {
+            supplernamelist[i] = supplier.Name;
+            if (editmode) {
+                if (foodInfo.SupplierId.equals(supplier.Id))
+                    supplierIndex = i;
+            }
+            i++;
+        }
+
+        loadSpinner(edit_types, foodtypelist, typeIndex);
+        loadSpinner(edit_suppliers, supplernamelist, supplierIndex);
+
         // Change Text in Edit Mode
         if (editmode) {
             edit_foodname.setText(foodInfo.FoodName);
@@ -297,9 +338,16 @@ public class FoodFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                setSaveEnable(save, foodname.length() > 0 && isValidDecimal(foodprice.getText().toString().replace("$", "")) && isInteger(foodquantity.getText().toString()));
+                edit_add.setEnabled(edit_foodname.length() > 0 &&
+                                    isValidDecimal(edit_price.getText().toString().replace("$", "")) &&
+                                    isInteger(edit_quantity.getText().toString()) &&
+                                    edit_types.getSelectedItem() != null &&
+                                    edit_suppliers.getSelectedItem() != null);
             }
         };
+
+        edit_foodname.addTextChangedListener(generalWatcher);
+        edit_quantity.addTextChangedListener(generalWatcher);
 
         View.OnClickListener dialogClickListener = new View.OnClickListener() {
 
@@ -311,23 +359,24 @@ public class FoodFragment extends Fragment {
                 else if (view.getId() == R.id.dialog2_add) {
                     edit_progressBar.setVisibility(View.VISIBLE);
 
-                    Account ac = new Account();
-                    ac.Username = edit_foodname.getText().toString();
-                    ac.setPassword(edit_price.getText().toString());
-
-                    String url = GlobalVariables.hostname + "/link.php";
+                    String url = GlobalVariables.hostname + "/updateFood.php";
                     Map<String, String> hm = new HashMap<>();
                     hm.put("username", GlobalVariables.account.Username);
                     hm.put("password", GlobalVariables.account.getPassword());
-                    hm.put("linkusername", ac.Username);
-                    hm.put("linkpassword", ac.getPassword());
+                    hm.put("foodname", edit_foodname.getText().toString());
+                    hm.put("quantity", edit_quantity.getText().toString());
+                    hm.put("price", edit_price.getText().toString().replace("$", ""));
+                    hm.put("typeid", String.valueOf(foodTypes[edit_types.getSelectedItemPosition()].Id));
+                    hm.put("supplierid", String.valueOf(suppliers[edit_suppliers.getSelectedItemPosition()].Id));
+                    if (editmode)
+                        hm.put("foodid", String.valueOf(foodInfo.FoodId));
 
                     HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
 
                         @Override
                         public void onFinish(String response) {
                             Message msg=mHandler.obtainMessage();
-                            msg.what = HandleCode.LinkSuccess;
+                            msg.what = HandleCode.EditFoodSuccess;
                             msg.obj = dialog;
                             mHandler.sendMessage(msg);
                         }
@@ -343,60 +392,39 @@ public class FoodFragment extends Fragment {
                         @Override
                         public void OnForbidden() {
                             Message msg=mHandler.obtainMessage();
-                            msg.what = HandleCode.LinkFailed;
+                            msg.what = HandleCode.EditFoodFailed;
                             msg.obj = dialog;
                             mHandler.sendMessage(msg);
                         }
 
                         @Override
-                        public void OnBadRequest() {
-                            Message msg=mHandler.obtainMessage();
-                            msg.what = HandleCode.LinkRepeated;
-                            msg.obj = dialog;
-                            mHandler.sendMessage(msg);
-                        }
+                        public void OnBadRequest() { }
                     });
                 }
             }
         };
 
-        edit_foodname.addTextChangedListener(generalWatcher);
-        edit_quantity.addTextChangedListener(generalWatcher);
         edit_add.setOnClickListener(dialogClickListener);
         edit_cancel.setOnClickListener(dialogClickListener);
 
-        //TODO: Money Watcher
+        edit_price.addTextChangedListener(
+                new DollarWatcher(edit_price, edit_add, edit_foodname, edit_quantity, edit_types, edit_suppliers)
+        );
 
-    }
-
-    private int getIndexByFoodId(int foodid) {
-        int i = 0;
-        for (FoodType type : foodTypes) {
-            if (type.Id == foodid)
-                return i;
-            i++;
-        }
-        return -1;
     }
 
     private void loadSpinner(Spinner spinner, String[] list, int selectedIndex) {
-        String[] typeNames = new String[foodTypes.length];
-        for (int i = 0; i < typeNames.length; i++)
-            typeNames[i] = foodTypes[i].Name;
-
-        ArrayAdapter<String> adp = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, typeNames);
+        ArrayAdapter<String> adp = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, list);
         adp.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adp);
 
-        int index = getIndexByFoodId(foodid);
-        if (index != -1)
-            spinner.setSelection(index);
+        if (selectedIndex != -1)
+            spinner.setSelection(selectedIndex);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
-                selectedIndex = position;
 
             }
 
@@ -408,15 +436,17 @@ public class FoodFragment extends Fragment {
     }
 
     private class DollarWatcher implements TextWatcher {
-        private final EditText et;
-        private final EditText foodname, quantity;
-        private final ImageButton saveButton;
+        private final EditText et, foodname, quantity;
+        private final Button button;
+        private final Spinner sp1, sp2;
 
-        public DollarWatcher(EditText editText, ImageButton saveButton, EditText foodname, EditText quantity) {
+        public DollarWatcher(EditText editText, Button button, EditText foodname, EditText quantity, Spinner sp1, Spinner sp2) {
             this.et = editText;
             this.foodname = foodname;
-            this.saveButton = saveButton;
+            this.button = button;
             this.quantity = quantity;
+            this.sp1 = sp1;
+            this.sp2 = sp2;
         }
 
         @Override
@@ -434,7 +464,11 @@ public class FoodFragment extends Fragment {
                     et.setSelection(s.length() + 1);
                 }
 
-                setSaveEnable(saveButton, foodname.length() > 0 && isValidDecimal(s.toString().replace("$", "")) && isInteger(quantity.getText().toString()));
+                button.setEnabled(foodname.length() > 0 &&
+                        isValidDecimal(et.getText().toString().replace("$", "")) &&
+                        isInteger(quantity.getText().toString()) &&
+                        sp1.getSelectedItem() != null &&
+                        sp2.getSelectedItem() != null);
 
                 et.addTextChangedListener(this);
             } catch (Exception e) {
@@ -450,11 +484,6 @@ public class FoodFragment extends Fragment {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
 
         }
-    }
-
-    private void setSaveEnable(ImageButton saveButton, boolean enable) {
-        saveButton.setEnabled(enable);
-        saveButton.setImageAlpha(enable ? 255 : 75);
     }
 
     private boolean isValidDecimal(String numberStr) {
