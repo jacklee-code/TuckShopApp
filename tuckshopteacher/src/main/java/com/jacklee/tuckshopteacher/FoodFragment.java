@@ -64,7 +64,7 @@ public class FoodFragment extends Fragment {
                             // Create ListView
                             listView = binding.foodListview;
                             listView.setItemsCanFocus(true);
-                            foodAdapter = new FoodAdapter(getActivity(), foodList, mHandler, foodTypes);
+                            foodAdapter = new FoodAdapter(getActivity(), foodList, mHandler, foodTypes, binding.foodProgressBar);
                             listView.setAdapter(foodAdapter);
 
                             binding.foodProgressBar.setVisibility(View.INVISIBLE);
@@ -118,6 +118,13 @@ public class FoodFragment extends Fragment {
                             Toast.makeText(getContext(), "Operation failed, please try again.", Toast.LENGTH_SHORT).show();
                             binding.foodProgressBar.setVisibility(View.INVISIBLE);
                             binding.foodLoading.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+
+                        case HandleCode.RemoveFoodSuccess:
+                        {
+                            getFoodTypeList();
+                            Toast.makeText(getContext(), "Data successfully deleted", Toast.LENGTH_SHORT).show();
                         }
                         break;
 
@@ -288,6 +295,8 @@ public class FoodFragment extends Fragment {
         edit_add = (Button) food_view.findViewById(R.id.dialog2_add);
         edit_cancel = (Button) food_view.findViewById(R.id.dialog2_cancel);
         edit_progressBar = (ProgressBar) food_view.findViewById(R.id.dialog2_progressBar);
+
+        edit_price.setText("$");
 
         int i = 0;
         int typeIndex = -1;

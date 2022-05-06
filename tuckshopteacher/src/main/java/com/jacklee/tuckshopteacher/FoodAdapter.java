@@ -11,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FoodAdapter extends BaseAdapter {
 
@@ -21,15 +24,17 @@ public class FoodAdapter extends BaseAdapter {
     private List<Food> foodList;
     private FoodType[] foodTypes;
     private int selectedIndex = 0;
+    private ProgressBar progressBar;
 
     Handler handler;
 
     LayoutInflater mInflater;
-    public FoodAdapter(Context context, List<Food> foodList, Handler handler, FoodType[] foodTypes){
+    public FoodAdapter(Context context, List<Food> foodList, Handler handler, FoodType[] foodTypes, ProgressBar progressBar){
         this.context = context;
         this.foodList = foodList;
         this.handler = handler;
         this.foodTypes = foodTypes;
+        this.progressBar = progressBar;
     }
 
     @Override
@@ -77,6 +82,40 @@ public class FoodAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.flistitem_delete) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    String url = GlobalVariables.hostname + "/removeFood.php";
+                    Map<String, String> hm = new HashMap<>();
+                    hm.put("username", GlobalVariables.account.Username);
+                    hm.put("password", GlobalVariables.account.getPassword());
+                    hm.put("foodid", String.valueOf(foodList.get(position).FoodId));
+
+                    HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
+
+                        @Override
+                        public void onFinish(String response) {
+                            Message msg=handler.obtainMessage();
+                            msg.what = HandleCode.RemoveFoodSuccess;
+                            handler.sendMessage(msg);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Message msg=handler.obtainMessage();
+                            msg.what = HandleCode.Error_Msg;
+                            msg.obj = e;
+                            handler.sendMessage(msg);
+                        }
+
+                        @Override
+                        public void OnForbidden() {
+                            Message msg=handler.obtainMessage();
+                            msg.what = HandleCode.RemoveFoodFailed;
+                            handler.sendMessage(msg);
+                        }
+
+                        @Override
+                        public void OnBadRequest() { }
+                    });
 
                 } else if (v.getId() == R.id.flistitem_edit) {
                     Message msg = handler.obtainMessage();
