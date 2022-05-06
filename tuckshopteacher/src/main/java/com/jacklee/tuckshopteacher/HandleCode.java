@@ -62,4 +62,5 @@ public class HandleCode {
 
     public final static int FoodTypesSuccess = 40;
     public final static int FoodTypesFailed = 41;
+
 }

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -59,17 +60,16 @@ public class FoodAdapter extends BaseAdapter {
         rowView = inflater.inflate(R.layout.food_adapter, parent, false);
 
         ImageButton save, delete;
-        EditText foodname, foodprice, foodquantity;
-        Spinner foodtype;
+        TextView foodname, foodprice, foodquantity, foodtype;
 
         save = (ImageButton) rowView.findViewById(R.id.flistitem_savechange);
         setSaveEnable(save, false);
 
         delete = (ImageButton) rowView.findViewById(R.id.flistitem_delete);
-        foodname = (EditText) rowView.findViewById(R.id.flistitem_name);
-        foodtype = (Spinner) rowView.findViewById(R.id.flistitem_type);
-        foodprice = (EditText) rowView.findViewById(R.id.flistitem_price);
-        foodquantity = (EditText) rowView.findViewById(R.id.flistitem_quantity);
+        foodname = (TextView) rowView.findViewById(R.id.flistitem_name);
+        foodtype = (TextView) rowView.findViewById(R.id.flistitem_type);
+        foodprice = (TextView) rowView.findViewById(R.id.flistitem_price);
+        foodquantity = (TextView) rowView.findViewById(R.id.flistitem_quantity);
 
         foodname.setTag(foodList.get(position).FoodId);
         foodname.setText(foodList.get(position).FoodName);
@@ -120,100 +120,6 @@ public class FoodAdapter extends BaseAdapter {
         return rowView;
     }
 
-    private int getIndexByFoodId(int foodid) {
-        int i = 0;
-        for (FoodType type : foodTypes) {
-            if (type.Id == foodid)
-                return i;
-            i++;
-        }
-        return -1;
-    }
 
-    private void loadSpinner(Spinner spinner, int foodid) {
-        String[] typeNames = new String[foodTypes.length];
-        for (int i = 0; i < typeNames.length; i++)
-            typeNames[i] = foodTypes[i].Name;
-
-        ArrayAdapter<String> adp = new ArrayAdapter<String>(context, R.layout.spinner_foodtype, typeNames);
-        adp.setDropDownViewResource(R.layout.spinner_foodtype);
-        spinner.setAdapter(adp);
-
-        int index = getIndexByFoodId(foodid);
-        if (index != -1)
-            spinner.setSelection(index);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
-                selectedIndex = position;
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-
-            }
-        });
-    }
-
-    private class DollarWatcher implements TextWatcher {
-        private final EditText et;
-        private final EditText foodname, quantity;
-        private final ImageButton saveButton;
-
-        public DollarWatcher(EditText editText, ImageButton saveButton, EditText foodname, EditText quantity) {
-            this.et = editText;
-            this.foodname = foodname;
-            this.saveButton = saveButton;
-            this.quantity = quantity;
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            try {
-                et.removeTextChangedListener(this);
-
-
-                while (s.length() != 0 && s.toString().toCharArray()[0] != '$') {
-                    s.delete(0, 1);
-                }
-
-                if (s.length() < 1) {
-                    et.setText("$");
-                    et.setSelection(s.length() + 1);
-                }
-
-                setSaveEnable(saveButton, foodname.length() > 0 && isValidDecimal(s.toString().replace("$", "")) && isInteger(quantity.getText().toString()));
-
-                et.addTextChangedListener(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-    }
-
-    private void setSaveEnable(ImageButton saveButton, boolean enable) {
-        saveButton.setEnabled(enable);
-        saveButton.setImageAlpha(enable ? 255 : 75);
-    }
-
-    private boolean isValidDecimal(String numberStr) {
-        return numberStr.matches("^\\d+$$") || numberStr.matches("\\d+\\.\\d+$");
-    }
-
-    private boolean isInteger(String numberStr) {
-        return numberStr.matches("\\d+");
-    }
 
 }
