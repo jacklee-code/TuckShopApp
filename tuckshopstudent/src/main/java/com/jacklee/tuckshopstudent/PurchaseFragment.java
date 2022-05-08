@@ -171,6 +171,7 @@ public class PurchaseFragment extends Fragment {
                 binding.purchaseLoading.setVisibility(View.VISIBLE);
 
                 String json = new Gson().toJson(purchaseAdapter.getShoppingCart(GlobalVariables.account));
+                Log.e("purchase", json);
                 HttpUtil.sendHTTPRequest(GlobalVariables.hostname + "/purchase.php", json, new HttpCallbackListener() {
                     @Override
                     public void onFinish(String response) {

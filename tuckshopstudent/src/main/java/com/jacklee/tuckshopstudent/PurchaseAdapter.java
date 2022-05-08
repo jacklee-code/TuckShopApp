@@ -70,9 +70,12 @@ public class PurchaseAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView;
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        rowView = inflater.inflate(R.layout.purchase_adapter, parent, false);
+        View rowView = convertView;
+
+        if (rowView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            rowView = inflater.inflate(R.layout.purchase_adapter, parent, false);
+        }
 
         EditText quantity;
         TextView foodname, foodtype, foodprice;
@@ -122,7 +125,7 @@ public class PurchaseAdapter extends BaseAdapter {
                         }
                     }
                 } else {
-                    int key = Integer.parseInt(foodname.getTag().toString());
+                    String key = foodname.getTag().toString();
                     if (shoppingCart.containsKey(key)){
                         shoppingCart.remove(key);
                     }

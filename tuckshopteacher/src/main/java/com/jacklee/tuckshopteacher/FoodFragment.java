@@ -409,6 +409,7 @@ public class FoodFragment extends Fragment implements ZXingScannerView.ResultHan
 
         edit_foodname.addTextChangedListener(generalWatcher);
         edit_quantity.addTextChangedListener(generalWatcher);
+        edit_foodid.addTextChangedListener(generalWatcher);
 
         edit_scan.setOnClickListener(new View.OnClickListener() {
             @Override

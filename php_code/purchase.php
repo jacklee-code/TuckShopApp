@@ -30,6 +30,7 @@
 			$price = $stmt->fetchColumn() * $val;
 			$total_price += $price;
 
+
             // Check Banned
             $sql = "SELECT * FROM Accounts as a, Banned AS b WHERE a.UserId = :userid AND a.UserId = b.StudentId AND b.FoodId = :foodid;";
             $stmt = $db->prepare($sql);
@@ -37,6 +38,7 @@
             $stmt->bindParam(":foodid", $key);
             $stmt->execute();
             $banned = $stmt->rowCount() > 0;
+
 
             $success = !$banned;
             if ($banned)
