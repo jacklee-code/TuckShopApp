@@ -12,7 +12,17 @@
     tools:context=".LoginActivity">
 
     <EditText
+        android:id="@+id/dialog2_foodid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:hint="Food ID / Barcode"
+        app:layout_constraintRight_toLeftOf="@id/dialog2_scan"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:enabled="false"/>
 
+    <EditText
         android:id="@+id/dialog2_foodname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -20,7 +30,7 @@
         android:hint="Food Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/dialog2_foodid" />
 
     <Spinner
 
@@ -29,8 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:hint="Food Type"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/dialog2_foodname"
+        app:layout_constraintStart_toStartOf="@+id/dialog2_foodname"
         app:layout_constraintTop_toBottomOf="@+id/dialog2_foodname" />
 
     <Spinner
@@ -40,8 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:hint="Supplier Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/dialog2_foodtype"
+        app:layout_constraintStart_toStartOf="@+id/dialog2_foodtype"
         app:layout_constraintTop_toBottomOf="@+id/dialog2_foodtype" />
 
     <EditText
@@ -49,23 +59,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:hint="Price (Per Serving)"
         android:layout_marginRight="20dp"
+        android:hint="Price (Per Serving)"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/dialog2_supplierlist"
         app:layout_constraintTop_toBottomOf="@+id/dialog2_supplierlist" />
 
     <EditText
         android:id="@+id/dialog2_quantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="25dp"
         android:hint="Quantity"
-        android:layout_marginLeft="20dp"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintEnd_toEndOf="parent"
         android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/dialog2_supplierlist"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/dialog2_supplierlist" />
 
     <Button
@@ -123,5 +133,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.6" />
+
+    <ImageButton
+        android:id="@+id/dialog2_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/dialog2_foodid"
+        app:layout_constraintLeft_toRightOf="@id/dialog2_foodid"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dialog2_foodid"
+        app:srcCompat="@drawable/ic_baseline_qr_code_scanner_24"
+        android:layout_marginLeft="10dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

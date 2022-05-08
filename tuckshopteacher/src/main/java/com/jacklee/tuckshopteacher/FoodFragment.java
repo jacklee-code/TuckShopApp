@@ -1,6 +1,10 @@
 package com.jacklee.tuckshopteacher;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.content.pm.PackageManager;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -21,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
@@ -50,6 +56,15 @@ public class FoodFragment extends Fragment {
 
         binding = FragmentFoodBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        //取得相機權限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                ActivityCompat.checkSelfPermission(getContext(),
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, 100);
+        } else {
+
+        }
 
         mHandler = new Handler(){
             public void handleMessage(Message msg) {
@@ -274,8 +289,9 @@ public class FoodFragment extends Fragment {
         View food_view;
 
         Spinner edit_types, edit_suppliers;
-        EditText edit_foodname, edit_price, edit_quantity;
+        EditText edit_foodid, edit_foodname, edit_price, edit_quantity;
         Button edit_add, edit_cancel;
+        ImageButton edit_scan;
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         food_view = inflater.inflate(R.layout.dialog_editfood,null);
@@ -287,6 +303,7 @@ public class FoodFragment extends Fragment {
         Dialog dialog = builder.create();
         dialog.show();
 
+        edit_foodid = (EditText) food_view.findViewById(R.id.dialog2_foodid);
         edit_foodname = (EditText) food_view.findViewById(R.id.dialog2_foodname);
         edit_price = (EditText) food_view.findViewById(R.id.dialog2_price);
         edit_quantity = (EditText) food_view.findViewById(R.id.dialog2_quantity);
@@ -295,6 +312,11 @@ public class FoodFragment extends Fragment {
         edit_add = (Button) food_view.findViewById(R.id.dialog2_add);
         edit_cancel = (Button) food_view.findViewById(R.id.dialog2_cancel);
         edit_progressBar = (ProgressBar) food_view.findViewById(R.id.dialog2_progressBar);
+        edit_scan = (ImageButton) food_view.findViewById(R.id.dialog2_scan);
+
+        edit_scan.setEnabled(!editmode);
+        edit_foodid.setEnabled(!editmode);
+        edit_scan.setImageAlpha(!editmode ? 255 : 75);
 
         edit_price.setText("$");
 
@@ -328,6 +350,7 @@ public class FoodFragment extends Fragment {
 
         // Change Text in Edit Mode
         if (editmode) {
+            edit_foodid.setText("" + foodInfo.FoodId );
             edit_foodname.setText(foodInfo.FoodName);
             edit_add.setText("Edit");
             edit_price.setText("$" + String.format("%.2f", foodInfo.Price));
@@ -357,6 +380,13 @@ public class FoodFragment extends Fragment {
 
         edit_foodname.addTextChangedListener(generalWatcher);
         edit_quantity.addTextChangedListener(generalWatcher);
+
+        edit_scan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         View.OnClickListener dialogClickListener = new View.OnClickListener() {
 
@@ -503,6 +533,16 @@ public class FoodFragment extends Fragment {
         return numberStr.matches("\\d+");
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 100 && grantResults[0] ==0){
+            Toast.makeText(getContext(), "Good", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getContext(), "權限勒？", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public void onDestroyView() {
