@@ -20,7 +20,8 @@
         app:layout_constraintRight_toLeftOf="@id/dialog2_scan"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:inputType="number"/>
 
     <EditText
         android:id="@+id/dialog2_foodname"
@@ -117,6 +118,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <me.dm7.barcodescanner.zxing.ZXingScannerView
+        android:id="@+id/dialog2_qrview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"/>
+
     <Button
         android:id="@+id/dialog2_cancel"
         android:layout_width="wrap_content"
@@ -126,6 +137,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/dialog2_add"
         app:layout_constraintTop_toTopOf="@+id/dialog2_add" />
+
+    <Button
+        android:id="@+id/dialog2_stopscan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="14dp"
+        android:text="Stop Scanner"
+        android:visibility="gone"
+        android:layout_marginTop="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialog2_qrview" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
@@ -144,5 +167,12 @@
         app:layout_constraintTop_toTopOf="@+id/dialog2_foodid"
         app:srcCompat="@drawable/ic_baseline_qr_code_scanner_24"
         android:layout_marginLeft="10dp"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

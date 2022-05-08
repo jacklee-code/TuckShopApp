@@ -16,7 +16,7 @@
 
         $sql = "INSERT INTO Banned (StudentId, FoodId) VALUES (:targetid, :foodid);";
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(":foodid", $foodid, PDO::PARAM_INT);
+        $stmt->bindParam(":foodid", $foodid);
         $stmt->bindParam(":targetid", $targetid, PDO::PARAM_INT);
         $stmt->execute();
 

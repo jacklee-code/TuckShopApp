@@ -3,7 +3,6 @@ package com.jacklee.tuckshopteacher;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,9 +26,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompatSideChannelService;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
+import com.google.zxing.Result;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.jacklee.tuckshopteacher.databinding.FragmentFoodBinding;
 
 import java.util.Arrays;
@@ -37,9 +39,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FoodFragment extends Fragment {
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
+public class FoodFragment extends Fragment implements ZXingScannerView.ResultHandler {
 
     private FragmentFoodBinding binding;
+
+    ZXingScannerView qr_view;
+    Button edit_add, edit_cancel;
+    Button stopscan;
+    EditText edit_foodid;
 
     private List<Food> foodList;
     private ListView listView;
@@ -285,12 +294,29 @@ public class FoodFragment extends Fragment {
         });
     }
 
+    private void openQRCamera(){
+        qr_view.setVisibility(View.VISIBLE);
+        stopscan.setVisibility(View.VISIBLE);
+        edit_add.setVisibility(View.INVISIBLE);
+        edit_cancel.setVisibility(View.INVISIBLE);
+        qr_view.setResultHandler(this);
+        qr_view.startCamera();
+    }
+
+    private void stopCamera() {
+        qr_view.stopCamera();
+        edit_add.setVisibility(View.VISIBLE);
+        edit_cancel.setVisibility(View.VISIBLE);
+        qr_view.setVisibility(View.GONE);
+        stopscan.setVisibility(View.GONE);
+        super.onStop();
+    }
+
     private void showFoodEditDialog(Food foodInfo, boolean editmode) {
         View food_view;
 
         Spinner edit_types, edit_suppliers;
-        EditText edit_foodid, edit_foodname, edit_price, edit_quantity;
-        Button edit_add, edit_cancel;
+        EditText edit_foodname, edit_price, edit_quantity;
         ImageButton edit_scan;
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -313,6 +339,8 @@ public class FoodFragment extends Fragment {
         edit_cancel = (Button) food_view.findViewById(R.id.dialog2_cancel);
         edit_progressBar = (ProgressBar) food_view.findViewById(R.id.dialog2_progressBar);
         edit_scan = (ImageButton) food_view.findViewById(R.id.dialog2_scan);
+        qr_view = food_view.findViewById(R.id.dialog2_qrview);
+        stopscan = (Button) food_view.findViewById(R.id.dialog2_stopscan);
 
         edit_scan.setEnabled(!editmode);
         edit_foodid.setEnabled(!editmode);
@@ -374,7 +402,8 @@ public class FoodFragment extends Fragment {
                                     isValidDecimal(edit_price.getText().toString().replace("$", "")) &&
                                     isInteger(edit_quantity.getText().toString()) &&
                                     edit_types.getSelectedItem() != null &&
-                                    edit_suppliers.getSelectedItem() != null);
+                                    edit_suppliers.getSelectedItem() != null &&
+                                    edit_foodid.length() > 0);
             }
         };
 
@@ -392,7 +421,9 @@ public class FoodFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                if (view.getId() == R.id.dialog2_cancel)
+                if (view.getId() == R.id.dialog2_stopscan)
+                    stopCamera();
+                else if (view.getId() == R.id.dialog2_cancel)
                     dialog.dismiss();
 
                 else if (view.getId() == R.id.dialog2_add) {
@@ -407,8 +438,9 @@ public class FoodFragment extends Fragment {
                     hm.put("price", edit_price.getText().toString().replace("$", ""));
                     hm.put("typeid", String.valueOf(foodTypes[edit_types.getSelectedItemPosition()].Id));
                     hm.put("supplierid", String.valueOf(suppliers[edit_suppliers.getSelectedItemPosition()].Id));
+                    hm.put("foodid", edit_foodid.getText().toString());
                     if (editmode)
-                        hm.put("foodid", String.valueOf(foodInfo.FoodId));
+                        hm.put("editmode", "true");
 
                     HttpUtil.sendHTTPRequest(url, hm, new HttpCallbackListener() {
 
@@ -443,8 +475,16 @@ public class FoodFragment extends Fragment {
             }
         };
 
+        edit_scan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openQRCamera();
+            }
+        });
+
         edit_add.setOnClickListener(dialogClickListener);
         edit_cancel.setOnClickListener(dialogClickListener);
+        stopscan.setOnClickListener(dialogClickListener);
 
         edit_price.addTextChangedListener(
                 new DollarWatcher(edit_price, edit_add, edit_foodname, edit_quantity, edit_types, edit_suppliers)
@@ -473,6 +513,14 @@ public class FoodFragment extends Fragment {
             }
         });
     }
+
+    @Override
+    public void handleResult(Result result) {
+        stopCamera();
+        edit_foodid.setText(result.getText());
+    }
+
+
 
     private class DollarWatcher implements TextWatcher {
         private final EditText et, foodname, quantity;
@@ -507,7 +555,8 @@ public class FoodFragment extends Fragment {
                         isValidDecimal(et.getText().toString().replace("$", "")) &&
                         isInteger(quantity.getText().toString()) &&
                         sp1.getSelectedItem() != null &&
-                        sp2.getSelectedItem() != null);
+                        sp2.getSelectedItem() != null &&
+                        edit_foodid.length() > 0);
 
                 et.addTextChangedListener(this);
             } catch (Exception e) {

@@ -24,7 +24,7 @@
         $foodid = $_POST["foodid"];
         $sql = "DELETE FROM Foods WHERE FoodId = :foodid;";
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(":foodid", $foodid, PDO::PARAM_INT);
+        $stmt->bindParam(":foodid", $foodid);
         $stmt->execute();
     }
 

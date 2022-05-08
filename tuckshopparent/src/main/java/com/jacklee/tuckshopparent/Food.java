@@ -1,7 +1,7 @@
 package com.jacklee.tuckshopparent;
 
 public class Food {
-    public int FoodId;
+    public String FoodId;
     public String FoodName;
     public String FoodType;
     public int Quantity;

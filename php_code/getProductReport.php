@@ -18,7 +18,7 @@
                 WHERE s.RecordId = b.RecordId AND b.StudentId = a.UserId
                 AND s.FoodId = :foodid;";
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(":foodid", $foodid, PDO::PARAM_INT);
+        $stmt->bindParam(":foodid", $foodid);
         $stmt->execute();
 
         echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC),JSON_NUMERIC_CHECK);

@@ -73,7 +73,7 @@
                 // Remove from quantity
                 $sql = "UPDATE Foods SET Quantity = Quantity - :amount WHERE FoodId=:foodId;";
                 $stmt = $db->prepare($sql);
-                $stmt->bindParam(":foodId", $key, PDO::PARAM_INT);
+                $stmt->bindParam(":foodId", $key);
                 $stmt->bindParam(":amount", $val, PDO::PARAM_INT);
                 $stmt->execute();
 
@@ -88,7 +88,7 @@
                 $sql = "INSERT INTO BuySlots (RecordId, FoodId, Quantity, Foodname, Price) VALUES (:recordid, :foodid, :quantity, :foodname, :price);";
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam(":recordid", $recordid, PDO::PARAM_INT);
-                $stmt->bindParam(":foodid", $key, PDO::PARAM_INT);
+                $stmt->bindParam(":foodid", $key);
                 $stmt->bindParam(":quantity", $val, PDO::PARAM_INT);
                 $stmt->bindParam(":foodname", $food["FoodName"]);
                 $stmt->bindParam(":price", $food["Price"]);

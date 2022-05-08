@@ -33,23 +33,9 @@
                 $statement = $db->prepare($sql);
                 $statement->bindParam(":id", $results[$x]["RecordId"], PDO::PARAM_INT);
                 $statement->execute();
-                //$foodList = $statement->fetchAll(PDO::FETCH_ASSOC);
 
                 $foodArray = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-                /*foreach ($foodList as $key => $val) {
-                    $sql = "SELECT f.FoodId, f.FoodName, f.Price, s.SupplierName AS Supplier, t.TypeName AS FoodType
-                            FROM Foods AS f, Suppliers AS s, FoodType AS t
-                            WHERE f.FoodId = :foodid AND t.TypeId = f.TypeId AND s.SupplierId = f.SupplierId;";
-                    $statement = $db->prepare($sql);
-                    $statement->bindParam(":foodid", $val["FoodId"], PDO::PARAM_INT);
-                    $statement->execute();
-                    if ($statement->rowCount() > 0) {
-                        $food = $statement->fetch(PDO::FETCH_ASSOC);
-                        $food["Quantity"] = $val["Quantity"];
-                        $foodArray[] = $food;
-                    }
-                }*/
                 $results[$x]["jsonString"] = json_encode($foodArray, JSON_NUMERIC_CHECK);
             }
         }

@@ -21,8 +21,8 @@ public class PurchaseAdapter extends BaseAdapter {
 
     private Context context;
     private List<Food> foodList;
-    private HashMap<Integer, Integer> shoppingCart;
-    private HashMap<Integer, Double> priceTable;
+    private HashMap<String, Integer> shoppingCart;
+    private HashMap<String, Double> priceTable;
     private TextView totalAmountView;
 
     LayoutInflater mInflater;
@@ -54,7 +54,7 @@ public class PurchaseAdapter extends BaseAdapter {
 
     public double getTotalAmount() {
         double sum = 0;
-        for (Map.Entry<Integer, Integer> entry: shoppingCart.entrySet()) {
+        for (Map.Entry<String, Integer> entry: shoppingCart.entrySet()) {
             sum += entry.getValue() * priceTable.get(entry.getKey());
         }
         return sum;
@@ -110,7 +110,7 @@ public class PurchaseAdapter extends BaseAdapter {
                     if (iQuantity > 0) {
                         int max = Integer.parseInt(quantity.getHint().toString().replace("MAX:", ""));
                         if (iQuantity <= max) {
-                            int foodid = Integer.parseInt(foodname.getTag().toString());
+                            String foodid = foodname.getTag().toString();
                             shoppingCart.put(foodid, iQuantity);
 
                         } else {

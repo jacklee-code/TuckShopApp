@@ -5,5 +5,5 @@ import java.util.Map;
 public class ShoppingCart {
     public String Username;
     public String Password;
-    public Map<Integer, Integer> ItemList;
+    public Map<String, Integer> ItemList;
 }
