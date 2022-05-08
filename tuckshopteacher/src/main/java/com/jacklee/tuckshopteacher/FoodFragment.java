@@ -588,9 +588,13 @@ public class FoodFragment extends Fragment implements ZXingScannerView.ResultHan
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == 100 && grantResults[0] ==0){
-            Toast.makeText(getContext(), "Good", Toast.LENGTH_SHORT).show();
+
         }else{
-            Toast.makeText(getContext(), "權限勒？", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Failed to grant permission");
+            builder.setMessage("You will not be able to scan the barcode because the app cannot obtain permission to use the camera.");
+            builder.setPositiveButton("OK", null);
+            builder.show();
         }
     }
 
