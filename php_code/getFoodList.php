@@ -43,7 +43,7 @@
                 $results[$x]["Banned"] = $statement->rowCount() > 0;
             }
 
-        $json = json_encode($results, JSON_NUMERIC_CHECK);
+        $json = json_encode($results);
 
         echo $json;
     }

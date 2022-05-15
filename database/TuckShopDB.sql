@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： localhost:3306
--- 產生時間： 2022 年 05 月 06 日 14:27
+-- 產生時間： 2022 年 05 月 08 日 15:30
 -- 伺服器版本： 10.5.12-MariaDB
 -- PHP 版本： 7.3.32
 
@@ -42,17 +42,9 @@ CREATE TABLE `Accounts` (
 --
 
 INSERT INTO `Accounts` (`UserId`, `Username`, `Fullname`, `Password`, `Balance`, `TypeId`) VALUES
-(2, 'peter', 'Peter Park', 'e10adc3949ba59abbe56e057f20f883e', 79.67, 1),
-(3, 'ben', 'Ben Ten', 'e10adc3949ba59abbe56e057f20f883e', 0.00, 1),
-(5, 'jack2', 'Jack 2', 'e10adc3949ba59abbe56e057f20f883e', 6.55, 1),
-(9, 'kitty', 'Kitty', 'e10adc3949ba59abbe56e057f20f883e', 0.00, 1),
-(14, 'kitty2', 'Kitty 2', 'e10adc3949ba59abbe56e057f20f883e', 0.00, 1),
-(16, 'test', 'Test Account', 'e10adc3949ba59abbe56e057f20f883e', 0.00, 1),
-(18, 'test2', 'Testii', 'e10adc3949ba59abbe56e057f20f883e', 0.00, 1),
-(19, 'student', 'Student Type', '027be05dc526f69a60b26a9d32419ea8', 0.00, 1),
-(21, 'type2', 'parent', 'e10adc3949ba59abbe56e057f20f883e', 0.00, 2),
-(22, 'jack', 'Jack Lee', 'e10adc3949ba59abbe56e057f20f883e', 465.70, 1),
-(24, 'admin', 'Admin', 'e10adc3949ba59abbe56e057f20f883e', 0.00, 3);
+(27, 'admin1', 'Teacher One', 'e10adc3949ba59abbe56e057f20f883e', 0.00, 3),
+(28, 'jack', 'Jack Lee', 'e10adc3949ba59abbe56e057f20f883e', 4283.50, 1),
+(29, 'parent1', 'Parent One', 'e10adc3949ba59abbe56e057f20f883e', 0.00, 2);
 
 -- --------------------------------------------------------
 
@@ -83,7 +75,7 @@ INSERT INTO `AccountType` (`TypeId`, `TypeName`) VALUES
 CREATE TABLE `Banned` (
   `BanId` int(11) NOT NULL,
   `StudentId` int(11) NOT NULL,
-  `FoodId` int(11) NOT NULL
+  `FoodId` varchar(30) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -91,9 +83,7 @@ CREATE TABLE `Banned` (
 --
 
 INSERT INTO `Banned` (`BanId`, `StudentId`, `FoodId`) VALUES
-(12, 2, 2),
-(15, 2, 5),
-(16, 22, 4);
+(19, 28, '4891338000024');
 
 -- --------------------------------------------------------
 
@@ -112,16 +102,9 @@ CREATE TABLE `BuyRecords` (
 --
 
 INSERT INTO `BuyRecords` (`RecordId`, `StudentId`, `Time`) VALUES
-(27, 22, '2022-05-03 07:04:51'),
-(28, 22, '2022-05-03 07:31:34'),
-(29, 2, '2022-05-04 07:59:58'),
-(30, 22, '2022-05-04 12:08:35'),
-(31, 22, '2022-05-04 13:19:13'),
-(32, 22, '2022-05-06 14:02:36'),
-(33, 22, '2022-05-06 14:04:20'),
-(34, 22, '2022-05-06 14:06:08'),
-(35, 22, '2022-05-06 14:13:40'),
-(36, 22, '2022-05-06 14:17:06');
+(40, 28, '2022-05-08 08:37:02'),
+(41, 28, '2022-05-08 08:37:37'),
+(42, 28, '2022-05-08 08:38:39');
 
 -- --------------------------------------------------------
 
@@ -132,7 +115,7 @@ INSERT INTO `BuyRecords` (`RecordId`, `StudentId`, `Time`) VALUES
 CREATE TABLE `BuySlots` (
   `SlotId` int(11) NOT NULL,
   `RecordId` int(11) NOT NULL,
-  `FoodId` int(11) NOT NULL,
+  `FoodId` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `Quantity` int(11) NOT NULL,
   `FoodName` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `Price` decimal(8,2) NOT NULL
@@ -143,25 +126,16 @@ CREATE TABLE `BuySlots` (
 --
 
 INSERT INTO `BuySlots` (`SlotId`, `RecordId`, `FoodId`, `Quantity`, `FoodName`, `Price`) VALUES
-(1, 27, 1, 1, 'Chips', 8.50),
-(2, 27, 2, 1, 'Biscuits', 10.50),
-(3, 28, 1, 5, 'Chips', 8.50),
-(4, 28, 4, 1, 'Fish Balls', 4.00),
-(5, 29, 1, 1, 'Chips', 8.50),
-(6, 29, 4, 5, 'Fish Balls', 4.00),
-(7, 30, 6, 2, 'Coca Cola', 11.00),
-(9, 31, 6, 1, 'Coca Cola', 11.00),
-(11, 32, 1, 1, 'Chips', 9.50),
-(12, 32, 2, 1, 'Biscuits', 10.50),
-(13, 32, 3, 1, 'Candy', 4.50),
-(14, 32, 6, 1, 'Coca Cola', 11.00),
-(15, 33, 1, 1, 'Chips', 6.50),
-(16, 33, 2, 1, 'Biscuits', 4.50),
-(17, 33, 3, 1, 'Candy', 4.50),
-(18, 33, 6, 1, 'Coca Cola', 9.00),
-(19, 34, 13, 5, '7up', 9.80),
-(20, 35, 14, 1, 'Special food', 100.00),
-(21, 36, 15, 1, 'special food', 100.00);
+(26, 40, '4895058314836', 1, 'Potato Chips', 11.00),
+(27, 41, '351467107246', 2, 'Fanta', 10.50),
+(28, 41, '4895058314836', 1, 'Potato Chips', 11.00),
+(29, 41, '4897053380038', 2, 'Dreyer\'s Stick', 25.00),
+(30, 41, '4895241100758', 1, 'Coca Cola', 11.00),
+(31, 41, '6922266436956', 3, 'Doll Noodle', 8.50),
+(32, 41, '4891338000024', 3, 'Fish Balls', 6.00),
+(33, 41, '4892659057292', 5, 'Shao Mai', 6.00),
+(34, 41, '4901005118737', 1, 'Pocky (Strawberry)', 15.00),
+(35, 42, '4892659057292', 4, 'Shao Mai', 6.00);
 
 -- --------------------------------------------------------
 
@@ -170,7 +144,7 @@ INSERT INTO `BuySlots` (`SlotId`, `RecordId`, `FoodId`, `Quantity`, `FoodName`, 
 --
 
 CREATE TABLE `Foods` (
-  `FoodId` int(11) NOT NULL,
+  `FoodId` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `FoodName` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `SupplierId` int(11) NOT NULL,
   `TypeId` int(11) NOT NULL,
@@ -183,12 +157,17 @@ CREATE TABLE `Foods` (
 --
 
 INSERT INTO `Foods` (`FoodId`, `FoodName`, `SupplierId`, `TypeId`, `Quantity`, `Price`) VALUES
-(1, 'Chips', 1, 1, 88, 6.50),
-(2, 'Biscuits', 2, 1, 44, 4.50),
-(3, 'Candy', 1, 1, 46, 4.50),
-(4, 'Fish Balls', 2, 2, 41, 4.00),
-(5, 'Shao Mai', 2, 2, 70, 6.00),
-(6, 'Coca Cola', 2, 3, 94, 9.00);
+('089782021014', 'Chocolate Finger', 11, 1, 80, 9.50),
+('351467107246', 'Fanta', 17, 3, 89, 10.50),
+('4891074020423', 'Fish Meat Sausage', 13, 2, 98, 6.00),
+('4891338000024', 'Fish Balls', 18, 2, 132, 6.00),
+('4892659057292', 'Shao Mai', 18, 2, 141, 6.00),
+('4895058314836', 'Potato Chips', 12, 1, 68, 11.00),
+('4895241100758', 'Coca Cola', 17, 3, 54, 11.00),
+('4897038194858', 'Preserved Beef', 20, 1, 88, 7.50),
+('4897053380038', 'Dreyer\'s Stick', 15, 2, 58, 25.00),
+('4901005118737', 'Pocky (Strawberry)', 19, 1, 39, 15.00),
+('6922266436956', 'Doll Noodle', 16, 2, 43, 8.50);
 
 -- --------------------------------------------------------
 
@@ -227,8 +206,7 @@ CREATE TABLE `Linkage` (
 --
 
 INSERT INTO `Linkage` (`LinkId`, `ParentId`, `StudentId`) VALUES
-(22, 21, 22),
-(23, 21, 3);
+(25, 29, 28);
 
 -- --------------------------------------------------------
 
@@ -247,8 +225,15 @@ CREATE TABLE `Suppliers` (
 --
 
 INSERT INTO `Suppliers` (`SupplierId`, `SupplierName`, `SupplierDescription`) VALUES
-(1, 'EdUHK', ''),
-(2, 'IIT3008', '');
+(11, 'Garden', 'Hong Kong-based bakery'),
+(12, 'Pringles', 'Amercian brand'),
+(13, 'EDO', 'Hong Kong-based company'),
+(15, 'Nestlé', 'Swiss multinational company'),
+(16, 'Nissin', 'Japanese company '),
+(17, 'Swire', 'British Company'),
+(18, 'Four Seas', 'Hong Kong Dim Sum Company'),
+(19, 'Pocky', 'Japanese food company'),
+(20, '759 Store', 'A Hong Kong store');
 
 --
 -- 已傾印資料表的索引
@@ -273,8 +258,8 @@ ALTER TABLE `AccountType`
 --
 ALTER TABLE `Banned`
   ADD PRIMARY KEY (`BanId`),
-  ADD KEY `FoodId` (`FoodId`),
-  ADD KEY `StudentId` (`StudentId`);
+  ADD KEY `StudentId` (`StudentId`),
+  ADD KEY `FoodId` (`FoodId`);
 
 --
 -- 資料表索引 `BuyRecords`
@@ -288,7 +273,8 @@ ALTER TABLE `BuyRecords`
 --
 ALTER TABLE `BuySlots`
   ADD PRIMARY KEY (`SlotId`),
-  ADD KEY `BuyItems_ibfk_1` (`RecordId`);
+  ADD KEY `BuyItems_ibfk_1` (`RecordId`),
+  ADD KEY `FoodId` (`FoodId`);
 
 --
 -- 資料表索引 `Foods`
@@ -326,7 +312,7 @@ ALTER TABLE `Suppliers`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `Accounts`
 --
 ALTER TABLE `Accounts`
-  MODIFY `UserId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `UserId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `AccountType`
@@ -338,25 +324,19 @@ ALTER TABLE `AccountType`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `Banned`
 --
 ALTER TABLE `Banned`
-  MODIFY `BanId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `BanId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `BuyRecords`
 --
 ALTER TABLE `BuyRecords`
-  MODIFY `RecordId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `RecordId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `BuySlots`
 --
 ALTER TABLE `BuySlots`
-  MODIFY `SlotId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
-
---
--- 使用資料表自動遞增(AUTO_INCREMENT) `Foods`
---
-ALTER TABLE `Foods`
-  MODIFY `FoodId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `SlotId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `FoodType`
@@ -368,13 +348,13 @@ ALTER TABLE `FoodType`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `Linkage`
 --
 ALTER TABLE `Linkage`
-  MODIFY `LinkId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `LinkId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `Suppliers`
 --
 ALTER TABLE `Suppliers`
-  MODIFY `SupplierId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `SupplierId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- 已傾印資料表的限制式
@@ -390,8 +370,8 @@ ALTER TABLE `Accounts`
 -- 資料表的限制式 `Banned`
 --
 ALTER TABLE `Banned`
-  ADD CONSTRAINT `Banned_ibfk_1` FOREIGN KEY (`FoodId`) REFERENCES `Foods` (`FoodId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Banned_ibfk_2` FOREIGN KEY (`StudentId`) REFERENCES `Accounts` (`UserId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `Banned_ibfk_2` FOREIGN KEY (`StudentId`) REFERENCES `Accounts` (`UserId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `Banned_ibfk_3` FOREIGN KEY (`FoodId`) REFERENCES `Foods` (`FoodId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 資料表的限制式 `BuyRecords`
@@ -403,7 +383,8 @@ ALTER TABLE `BuyRecords`
 -- 資料表的限制式 `BuySlots`
 --
 ALTER TABLE `BuySlots`
-  ADD CONSTRAINT `BuySlots_ibfk_1` FOREIGN KEY (`RecordId`) REFERENCES `BuyRecords` (`RecordId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `BuySlots_ibfk_1` FOREIGN KEY (`RecordId`) REFERENCES `BuyRecords` (`RecordId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `BuySlots_ibfk_2` FOREIGN KEY (`FoodId`) REFERENCES `Foods` (`FoodId`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- 資料表的限制式 `Foods`
