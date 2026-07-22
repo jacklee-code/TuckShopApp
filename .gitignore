@@ -1,5 +1,6 @@
 *.iml
 .gradle
+/.idea/
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -13,3 +14,10 @@
 .externalNativeBuild
 .cxx
 local.properties
+.env
+.env.*
+!/php_code/.env.example
+/php_code/test.json
+key.properties
+*.jks
+*.keystore
